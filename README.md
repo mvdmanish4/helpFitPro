@@ -1,4 +1,4 @@
-# APP Base
+# HelpFit Base
 
 This is the base code to build a basic API server using Jersey. This repo 
 contains a server and a client. 
