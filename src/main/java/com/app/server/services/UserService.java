@@ -1,5 +1,10 @@
 package com.app.server.services;
 
+import com.app.server.http.exceptions.APPBadRequestException;
+import com.app.server.http.exceptions.APPInternalServerException;
+import com.app.server.http.exceptions.APPUnauthorizedException;
+import com.app.server.models.Payment.Transaction;
+import com.app.server.util.APPCrypt;
 import com.app.server.util.parser.UserDocumentParser;
 import com.app.server.models.User.User;
 import com.app.server.util.MongoPool;
@@ -14,7 +19,9 @@ import org.bson.types.ObjectId;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import javax.ws.rs.core.HttpHeaders;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * UserService
@@ -26,10 +33,12 @@ public class UserService {
     private static UserService userInstance;
     private ObjectWriter ow;
     private MongoCollection<Document> userCollection = null;
+    private TransactionService transactionService;
 
 
     private UserService() {
         this.userCollection = MongoPool.getInstance().getCollection("user");
+        transactionService = TransactionService.getInstance();
         ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
     }
 
@@ -70,7 +79,6 @@ public class UserService {
     }
 
     public User create(Object request) {
-
         try {
             JSONObject json = null;
             json = new JSONObject(ow.writeValueAsString(request));
@@ -89,6 +97,58 @@ public class UserService {
         }
     }
 
+    public ArrayList<Transaction> getUserTransactions(HttpHeaders headers, String id){
+        ArrayList<Transaction> userTransactions = null;
+        try {
+            checkAuthentication(headers, id);
+            userTransactions = transactionService.getAllUserTranscations(id);
+        }catch(JsonProcessingException e) {
+            System.out.println("Failed to create a document");
+            return null;
+        } catch(APPBadRequestException e) {
+            throw new APPBadRequestException(33, e.getMessage());
+        }catch(APPUnauthorizedException e) {
+            throw new APPUnauthorizedException(34, e.getMessage());
+        }catch(Exception e) {
+            System.out.println("EXCEPTION!!!!");
+            e.printStackTrace();
+            throw new APPInternalServerException(99, e.getMessage());
+        }
+        return userTransactions;
+    }
+
+
+    public Transaction createTranscation(HttpHeaders headers, String id, Object request) {
+        Transaction trans = null;
+        try {
+            checkAuthentication(headers,id);
+            trans = transactionService.create(request);
+        } catch(JsonProcessingException e) {
+            System.out.println("Failed to create a document");
+            return null;
+        } catch(APPBadRequestException e) {
+            throw new APPBadRequestException(33, e.getMessage());
+        }
+        catch(APPUnauthorizedException e) {
+            throw new APPUnauthorizedException(34, e.getMessage());
+        }catch(Exception e) {
+            System.out.println("EXCEPTION!!!!");
+            e.printStackTrace();
+            throw new APPInternalServerException(99, e.getMessage());
+        }
+        return trans;
+    }
+
+    private void checkAuthentication(HttpHeaders headers,String id) throws Exception{
+        List<String> authHeaders = headers.getRequestHeader(HttpHeaders.AUTHORIZATION);
+        if (authHeaders == null)
+            throw new APPUnauthorizedException(70,"No Authorization Headers");
+        String token = authHeaders.get(0);
+        String clearToken = APPCrypt.decrypt(token);
+        if (id.compareTo(clearToken) != 0) {
+            throw new APPUnauthorizedException(71,"Invalid token. Please try getting a new token");
+        }
+    }
 
     public Object update(String id, Object request) {
         try {

@@ -25,7 +25,7 @@ public class MongoPool {
         MongoClientOptions opts = builder.build();
 
         MongoClient mc = new MongoClient(new ServerAddress());
-        db =mc.getDatabase("helpfit");
+        db =mc.getDatabase("helpFitv1");
         Logger.getLogger("org.mongodb.driver").setLevel(Level.WARNING);
     }
 

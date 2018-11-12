@@ -20,8 +20,7 @@ public class RegimeProgram {
     Date timeCreated;
     Date timeUpdated;
 
-    public RegimeProgram(String id, String userID, List<String> regimesID, Date recommendedDate, List<String> ailmentsAddressed, List<String> interestsAddressed, List<String> habitsAddressed, String isActive, String isFulfilled, Double durationWeeks, Date startDate, Date endDate, Date timeCreated, Date timeUpdated) {
-        this.id = id;
+    public RegimeProgram(String userID, List<String> regimesID, Date recommendedDate, List<String> ailmentsAddressed, List<String> interestsAddressed, List<String> habitsAddressed, String isActive, String isFulfilled, Double durationWeeks, Date startDate, Date endDate, Date timeCreated, Date timeUpdated) {
         this.userID = userID;
         this.regimesID = regimesID;
         this.recommendedDate = recommendedDate;

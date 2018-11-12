@@ -4,6 +4,7 @@ import com.app.server.models.Preferences.Ailment;
 import com.app.server.models.Preferences.Habit;
 import com.app.server.models.Preferences.Interest;
 
+import java.util.Date;
 import java.util.List;
 
 public class Transaction {
@@ -12,26 +13,27 @@ public class Transaction {
     private String eventId;
     private String organizerId;
     private String fitnessUserId;
-    private String amount;
+    private Double amount;
     private String currency;
     private String paymentMode;
     private String paymentGateway;
     private String paymentAttemptId;
     private String transactionState;
-    private String transactionTime;
-    private String transactionDate;
-    private String timeCreated;
-    private String timeUpdated;
+    private Date transactionTime;
+    private Date transactionDate;
+    private Date timeCreated;
+    private Date timeUpdated;
     private Boolean isActive;
 
-    public Transaction(String eventId, String organizerId, String fitnessUserId, String amount, String currency,
-                       String paymentMode, String paymentGateway, String paymentAttemptId, String transactionState,
-                       String transactionTime, String transactionDate, Boolean isActive, String timeCreated, String timeUpdated){
+
+    public Transaction(String eventId, String organizerId, String fitnessUserId, Double amount, String currency, String paymentMode, String paymentGateway, String paymentAttemptId, String transactionState, Date transactionTime, Date transactionDate, Date timeCreated, Date timeUpdated, Boolean isActive) {
         this.eventId = eventId;
         this.organizerId = organizerId;
         this.fitnessUserId = fitnessUserId;
-        this.amount = currency;
-        this.paymentMode = paymentGateway;
+        this.amount = amount;
+        this.currency = currency;
+        this.paymentMode = paymentMode;
+        this.paymentGateway = paymentGateway;
         this.paymentAttemptId = paymentAttemptId;
         this.transactionState = transactionState;
         this.transactionTime = transactionTime;
@@ -40,6 +42,7 @@ public class Transaction {
         this.timeUpdated = timeUpdated;
         this.isActive = isActive;
     }
+
     public String getEventId() {
         return eventId;
     }
@@ -64,13 +67,27 @@ public class Transaction {
         this.fitnessUserId = fitnessUserId;
     }
 
-    public String getAmount() {
-        return amount;
-    }
+    public String getId() {return id;}
 
-    public void setAmount(String amount) {
-        this.amount = amount;
-    }
+    public Double getAmount() {return amount;}
+
+    public void setAmount(Double amount) {this.amount = amount;}
+
+    public Date getTransactionTime() {return transactionTime;}
+
+    public void setTransactionTime(Date transactionTime) {this.transactionTime = transactionTime;}
+
+    public Date getTransactionDate() {return transactionDate;}
+
+    public void setTransactionDate(Date transactionDate) {this.transactionDate = transactionDate;}
+
+    public Date getTimeCreated() {return timeCreated;}
+
+    public void setTimeCreated(Date timeCreated) {this.timeCreated = timeCreated;}
+
+    public Date getTimeUpdated() {return timeUpdated;}
+
+    public void setTimeUpdated(Date timeUpdated) {this.timeUpdated = timeUpdated;}
 
     public String getCurrency() {
         return currency;
@@ -112,37 +129,7 @@ public class Transaction {
         this.transactionState = transactionState;
     }
 
-    public String getTransactionTime() {
-        return transactionTime;
-    }
 
-    public void setTransactionTime(String transactionTime) {
-        this.transactionTime = transactionTime;
-    }
-
-    public String getTransactionDate() {
-        return transactionDate;
-    }
-
-    public void setTransactionDate(String transactionDate) {
-        this.transactionDate = transactionDate;
-    }
-
-    public String getTimeCreated() {
-        return timeCreated;
-    }
-
-    public void setTimeCreated(String timeCreated) {
-        this.timeCreated = timeCreated;
-    }
-
-    public String getTimeUpdated() {
-        return timeUpdated;
-    }
-
-    public void setTimeUpdated(String timeUpdated) {
-        this.timeUpdated = timeUpdated;
-    }
 
     public Boolean getActive() {
         return isActive;

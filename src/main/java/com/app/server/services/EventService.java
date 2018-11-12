@@ -135,7 +135,6 @@ public class EventService {
         return new JSONObject();
     }
 
-
     public Object deleteAll() {
         eventCollection.deleteMany(new BasicDBObject());
         return new JSONObject();
