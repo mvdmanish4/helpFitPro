@@ -13,6 +13,7 @@ import org.bson.types.ObjectId;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -132,10 +133,9 @@ public class TransactionService {
                 item.getString("paymentGateway"),
                 item.getString("paymentAttemptId"),
                 item.getString("transactionState"),
-                item.getDate("transactionTime"),
-                item.getDate("transactionDate"),
-                item.getDate("timeCreated"),
-                item.getDate("timeUpdated"),
+                item.getString("transactionTime"),
+                item.getString("timeCreated"),
+                item.getString("timeUpdated"),
                 item.getBoolean("isActive"));
         transaction.setId(item.getObjectId("_id").toString());
         return transaction;
@@ -153,10 +153,9 @@ public class TransactionService {
                 json.getString("paymentGateway"),
                 json.getString("paymentAttemptId"),
                 json.getString("transactionState"),
-                new Date(),
-                new Date(),
-                new Date(),
-                new Date(),
+                json.getString("transactionTime"),
+                json.has("timeCreated")?json.getString("timeCreated"): String.valueOf(Instant.now().getEpochSecond()),
+                String.valueOf(Instant.now().getEpochSecond()),
                 true);
         return transaction;
     }
@@ -172,12 +171,9 @@ public class TransactionService {
                 .append("paymentAttemptId",transaction.getPaymentAttemptId())
                 .append("transactionState",transaction.getTransactionState())
                 .append("transactionTime", transaction.getTransactionTime())
-                .append("transactionDate", transaction.getTransactionDate())
                 .append("timeCreated", transaction.getTimeCreated())
                 .append("timeUpdated", transaction.getTimeUpdated())
                 .append("isActive", transaction.getActive());
          return doc;
     }
-
-
 }

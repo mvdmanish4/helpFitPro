@@ -1,6 +1,9 @@
 package com.app.server.services;
 
 import com.app.server.models.Event.Event;
+import com.app.server.models.Preferences.Ailment;
+import com.app.server.models.Preferences.Habit;
+import com.app.server.models.Preferences.Interest;
 import com.app.server.util.MongoPool;
 import com.app.server.util.parser.EventDocumentParser;
 import com.fasterxml.jackson.core.JsonProcessingException;

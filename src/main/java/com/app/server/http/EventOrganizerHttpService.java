@@ -68,20 +68,11 @@ public class EventOrganizerHttpService {
             if (d == null)
                 throw new APPNotFoundException(56,"Event not found");
             return new APPResponse(d);
-        }
-        catch(IllegalArgumentException e){
+        }catch(IllegalArgumentException e){
             throw new APPNotFoundException(56,"Event not found");
-        }
-        catch (Exception e) {
+        }catch (Exception e) {
             throw new APPInternalServerException(0,"Something went wrong.");
         }
-    }
-
-    @POST
-    @Consumes({ MediaType.APPLICATION_JSON})
-    @Produces({ MediaType.APPLICATION_JSON})
-    public APPResponse create(Object request) {
-            return new APPResponse(organizerService.create(request));
     }
 
     @PATCH
@@ -89,23 +80,19 @@ public class EventOrganizerHttpService {
     @Consumes({MediaType.APPLICATION_JSON})
     @Produces({MediaType.APPLICATION_JSON})
     public APPResponse update(@PathParam("id") String id, Object request){
-
         return new APPResponse(organizerService.update(id,request));
-
     }
 
     @DELETE
     @Path("{id}")
     @Produces({ MediaType.APPLICATION_JSON})
     public APPResponse delete(@PathParam("id") String id) {
-
         return new APPResponse(organizerService.delete(id));
     }
 
     @DELETE
     @Produces({ MediaType.APPLICATION_JSON})
     public APPResponse delete() {
-
         return new APPResponse(organizerService.deleteAll());
     }
 }

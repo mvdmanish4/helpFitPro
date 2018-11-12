@@ -8,19 +8,19 @@ public class RegimeProgram {
     String id;
     String userID;
     List<String> regimesID;
-    Date recommendedDate;
+    String recommendedDate;
     List<String> ailmentsAddressed;
     List<String> interestsAddressed;
     List<String> habitsAddressed;
     String isActive;
     String isFulfilled;
     Double durationWeeks;
-    Date startDate;
-    Date endDate;
-    Date timeCreated;
-    Date timeUpdated;
+    String startDate;
+    String endDate;
+    String timeCreated;
+    String timeUpdated;
 
-    public RegimeProgram(String userID, List<String> regimesID, Date recommendedDate, List<String> ailmentsAddressed, List<String> interestsAddressed, List<String> habitsAddressed, String isActive, String isFulfilled, Double durationWeeks, Date startDate, Date endDate, Date timeCreated, Date timeUpdated) {
+    public RegimeProgram(String userID, List<String> regimesID, String recommendedDate, List<String> ailmentsAddressed, List<String> interestsAddressed, List<String> habitsAddressed, String isActive, String isFulfilled, Double durationWeeks, String startDate, String endDate, String timeCreated, String timeUpdated) {
         this.userID = userID;
         this.regimesID = regimesID;
         this.recommendedDate = recommendedDate;
@@ -60,13 +60,9 @@ public class RegimeProgram {
         this.regimesID = regimesID;
     }
 
-    public Date getRecommendedDate() {
-        return recommendedDate;
-    }
+    public String getRecommendedDate() {return recommendedDate;}
 
-    public void setRecommendedDate(Date recommendedDate) {
-        this.recommendedDate = recommendedDate;
-    }
+    public void setRecommendedDate(String recommendedDate) {this.recommendedDate = recommendedDate;}
 
     public List<String> getAilmentsAddressed() {
         return ailmentsAddressed;
@@ -116,37 +112,21 @@ public class RegimeProgram {
         this.durationWeeks = durationWeeks;
     }
 
-    public Date getStartDate() {
-        return startDate;
-    }
+    public String getStartDate() {return startDate;}
 
-    public void setStartDate(Date startDate) {
-        this.startDate = startDate;
-    }
+    public void setStartDate(String startDate) {this.startDate = startDate;}
 
-    public Date getEndDate() {
-        return endDate;
-    }
+    public String getEndDate() {return endDate;}
 
-    public void setEndDate(Date endDate) {
-        this.endDate = endDate;
-    }
+    public void setEndDate(String endDate) {this.endDate = endDate;}
 
-    public Date getTimeCreated() {
-        return timeCreated;
-    }
+    public String getTimeCreated() {return timeCreated;}
 
-    public void setTimeCreated(Date timeCreated) {
-        this.timeCreated = timeCreated;
-    }
+    public void setTimeCreated(String timeCreated) {this.timeCreated = timeCreated;}
 
-    public Date getTimeUpdated() {
-        return timeUpdated;
-    }
+    public String getTimeUpdated() {return timeUpdated;}
 
-    public void setTimeUpdated(Date timeUpdated) {
-        this.timeUpdated = timeUpdated;
-    }
+    public void setTimeUpdated(String timeUpdated) {this.timeUpdated = timeUpdated;}
 
     @Override
     public String toString() {

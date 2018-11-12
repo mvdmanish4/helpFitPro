@@ -17,6 +17,7 @@ import org.json.JSONObject;
 
 import javax.ws.rs.core.HttpHeaders;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -194,8 +195,8 @@ public class RegimeService {
                 interests,
                 habits,
                 item.getString("isActive"),
-                item.getDate("timeCreated"),
-                item.getDate("timeUpdated"));
+                item.getString("timeCreated"),
+                item.getString("timeUpdated"));
         return regime;
     }
 
@@ -212,8 +213,8 @@ public class RegimeService {
                 jsonArraytoList(json.getJSONArray("insterestTags")),
                 jsonArraytoList(json.getJSONArray("habitsTags")),
                 json.getString("isActive"),
-                new Date(),
-                new Date());
+                json.has("timeCreated")?json.getString("isFulfilled"): String.valueOf(Instant.now().getEpochSecond()),
+                String.valueOf(Instant.now().getEpochSecond()));
         return regime;
     }
 

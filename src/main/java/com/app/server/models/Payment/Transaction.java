@@ -19,14 +19,12 @@ public class Transaction {
     private String paymentGateway;
     private String paymentAttemptId;
     private String transactionState;
-    private Date transactionTime;
-    private Date transactionDate;
-    private Date timeCreated;
-    private Date timeUpdated;
+    private String transactionTime;
+    private String timeCreated;
+    private String timeUpdated;
     private Boolean isActive;
 
-
-    public Transaction(String eventId, String organizerId, String fitnessUserId, Double amount, String currency, String paymentMode, String paymentGateway, String paymentAttemptId, String transactionState, Date transactionTime, Date transactionDate, Date timeCreated, Date timeUpdated, Boolean isActive) {
+    public Transaction(String eventId, String organizerId, String fitnessUserId, Double amount, String currency, String paymentMode, String paymentGateway, String paymentAttemptId, String transactionState, String transactionTime, String timeCreated, String timeUpdated, Boolean isActive) {
         this.eventId = eventId;
         this.organizerId = organizerId;
         this.fitnessUserId = fitnessUserId;
@@ -37,7 +35,6 @@ public class Transaction {
         this.paymentAttemptId = paymentAttemptId;
         this.transactionState = transactionState;
         this.transactionTime = transactionTime;
-        this.transactionDate = transactionDate;
         this.timeCreated = timeCreated;
         this.timeUpdated = timeUpdated;
         this.isActive = isActive;
@@ -72,22 +69,6 @@ public class Transaction {
     public Double getAmount() {return amount;}
 
     public void setAmount(Double amount) {this.amount = amount;}
-
-    public Date getTransactionTime() {return transactionTime;}
-
-    public void setTransactionTime(Date transactionTime) {this.transactionTime = transactionTime;}
-
-    public Date getTransactionDate() {return transactionDate;}
-
-    public void setTransactionDate(Date transactionDate) {this.transactionDate = transactionDate;}
-
-    public Date getTimeCreated() {return timeCreated;}
-
-    public void setTimeCreated(Date timeCreated) {this.timeCreated = timeCreated;}
-
-    public Date getTimeUpdated() {return timeUpdated;}
-
-    public void setTimeUpdated(Date timeUpdated) {this.timeUpdated = timeUpdated;}
 
     public String getCurrency() {
         return currency;
@@ -129,7 +110,17 @@ public class Transaction {
         this.transactionState = transactionState;
     }
 
+    public String getTransactionTime() {return transactionTime;}
 
+    public void setTransactionTime(String transactionTime) {this.transactionTime = transactionTime;}
+
+    public String getTimeCreated() {return timeCreated;}
+
+    public void setTimeCreated(String timeCreated) {this.timeCreated = timeCreated;}
+
+    public String getTimeUpdated() {return timeUpdated;}
+
+    public void setTimeUpdated(String timeUpdated) {this.timeUpdated = timeUpdated;}
 
     public Boolean getActive() {
         return isActive;

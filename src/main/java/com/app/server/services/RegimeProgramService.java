@@ -16,6 +16,7 @@ import org.json.JSONObject;
 
 import java.security.PublicKey;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -131,17 +132,17 @@ public class RegimeProgramService {
         try {
             regimeProgram = new RegimeProgram(json.getString("userID"),
                     jsonArraytoList(json.getJSONArray("regimesID")),
-                    new SimpleDateFormat("dd/MM/yyyy").parse(json.getString("recommendedDate")),
+                    json.getString("recommendedDate"),
                     jsonArraytoList(json.getJSONArray("ailmentTags")),
                     jsonArraytoList(json.getJSONArray("insterestTags")),
                     jsonArraytoList(json.getJSONArray("habitsTags")),
                     json.getString("isActive"),
                     json.getString("isFulfilled"),
                     json.getDouble("durationWeeks"),
-                    new SimpleDateFormat("dd/MM/yyyy").parse(json.getString("startDate")),
-                    new SimpleDateFormat("dd/MM/yyyy").parse(json.getString("endDate")),
-                    new Date(),
-                    new Date());
+                    String.valueOf(Instant.now().getEpochSecond()),
+                    String.valueOf(Instant.now().getEpochSecond()),
+                    json.has("timeCreated")?json.getString("isFulfilled"): String.valueOf(Instant.now().getEpochSecond()),
+                    String.valueOf(Instant.now().getEpochSecond()));
             regimeProgram.setId(json.getString("_id"));
         }catch(Exception e){}
         return regimeProgram;
@@ -155,17 +156,17 @@ public class RegimeProgramService {
         RegimeProgram regimeProgram = new RegimeProgram(
                 item.getString("userID"),
                 regimes,
-                item.getDate("recommendedDate"),
+                item.getString("recommendedDate"),
                 ailments,
                 interests,
                 habits,
                 item.getString("isActive"),
                 item.getString("isFulfilled"),
                 item.getDouble("durationWeeks"),
-                item.getDate("startDate"),
-                item.getDate("endDate"),
-                item.getDate("timeCreated"),
-                item.getDate("timeUpdated"));
+                item.getString("startDate"),
+                item.getString("endDate"),
+                item.getString("timeCreated"),
+                item.getString("timeUpdated"));
         regimeProgram.setId(item.getObjectId("_id").toString());
         return regimeProgram;
     }
@@ -187,5 +188,4 @@ public class RegimeProgramService {
         }
         return list;
     }
-
 }

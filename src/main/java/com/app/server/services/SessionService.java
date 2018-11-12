@@ -80,7 +80,6 @@ public class SessionService {
     }
 
     public Session signUp(Object request) {
-
         JSONObject json = null;
         try {
             json = new JSONObject(ow.writeValueAsString(request));
@@ -95,7 +94,7 @@ public class SessionService {
             } else if (userType.equals(UserType.FITNESS_USER)){
                 return new Session(createFitnessUser(request));
             } else if (userType.equals(UserType.EXPERT)){
-                return new Session(createFitnessUser(request));
+                return new Session(createExpert(request));
             } else if (userType.equals(UserType.EVENT_ORGANIZER)){
                 return new Session(createFitnessUser(request));
             }

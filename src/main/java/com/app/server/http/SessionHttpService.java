@@ -45,5 +45,4 @@ public class SessionHttpService {
     public APPResponse create(Object request) {
         return new APPResponse(service.createUser(request));
     }
-
 }
