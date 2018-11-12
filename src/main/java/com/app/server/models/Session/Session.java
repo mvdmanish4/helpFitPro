@@ -13,7 +13,8 @@ public class Session {
 
     public Session(User user) throws Exception{
         Timestamp now = new Timestamp(System.currentTimeMillis());
-        this.id = APPCrypt.encrypt(user.getId()+Long.toString(now.getTime())+Math.random());
+        //this.id = APPCrypt.encrypt(user.getId()+Long.toString(now.getTime())+Math.random());
+        this.id = APPCrypt.encrypt(user.getId());
         this.firstName = user.getFirstName();
         this.lastName = user.getLastName();
     }

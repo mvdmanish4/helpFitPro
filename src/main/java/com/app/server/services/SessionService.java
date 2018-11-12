@@ -49,7 +49,8 @@ public class SessionService {
                 throw new APPBadRequestException(55, "missing password");
             BasicDBObject query = new BasicDBObject();
             query.put("emailAddress", json.getString("emailAddress"));
-            query.put("password", APPCrypt.encrypt(json.getString("password")));
+            //query.put("password", APPCrypt.encrypt(json.getString("password")));
+            query.put("password", json.getString("password"));
             Document item = this.userCollection.find(query).first();
             if (item == null) {
                 throw new APPNotFoundException(0, "No user found matching credentials");
