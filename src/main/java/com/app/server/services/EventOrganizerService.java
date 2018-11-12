@@ -82,14 +82,14 @@ public class EventOrganizerService {
         return eventServiceInstance.getEventsByOrganizer(id);
     }
 
-    public EventOrganizer create(Object request) {
+    public EventOrganizer create(Object request, String userId) {
 
         try {
             JSONObject json = null;
             json = new JSONObject(ow.writeValueAsString(request));
-            EventOrganizer eventOrganizer = EventOrganizerDocumentParser.convertJsonToEventOrganizer(json);
-            Document doc = EventOrganizerDocumentParser.convertEventOrganizerToDocument(eventOrganizer);
+            Document doc = EventOrganizerDocumentParser.convertJsonToEventOrganizerDocument(json, userId);
             organizerCollection.insertOne(doc);
+            EventOrganizer eventOrganizer = EventOrganizerDocumentParser.convertJsonToEventOrganizer(json, userId);
             ObjectId id = (ObjectId)doc.get("_id");
             eventOrganizer.setId(id.toString());
             return eventOrganizer;
@@ -106,7 +106,8 @@ public class EventOrganizerService {
 
             BasicDBObject query = new BasicDBObject();
             query.put("_id", new ObjectId(id));
-            Document set = new Document("$set", EventOrganizerDocumentParser.convertJsonToEventOrganizerDocument(json));
+            Document set = new Document("$set",
+                    EventOrganizerDocumentParser.convertJsonToEventOrganizerDocument(json, json.getString("userId")));
             organizerCollection.updateOne(query,set);
             return request;
 

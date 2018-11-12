@@ -1,6 +1,5 @@
 package com.app.server.services;
 
-import com.app.server.models.HealthRegime.Regime;
 import com.app.server.models.Payment.Transaction;
 import com.app.server.util.MongoPool;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -14,10 +13,8 @@ import org.bson.types.ObjectId;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 public class TransactionService {
 

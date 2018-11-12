@@ -31,10 +31,19 @@ public class SessionHttpService {
     }
 
     @POST
+    @Path("/signup")
+    @Consumes({ MediaType.APPLICATION_JSON})
+    @Produces({ MediaType.APPLICATION_JSON})
+    public APPResponse signUp(Object request) {
+        return new APPResponse(service.signUp(request));
+    }
+
+    @POST
+    @Path("/login")
     @Consumes({ MediaType.APPLICATION_JSON})
     @Produces({ MediaType.APPLICATION_JSON})
     public APPResponse create(Object request) {
-        return new APPResponse(service.create(request));
+        return new APPResponse(service.createUser(request));
     }
 
 }
