@@ -61,13 +61,6 @@ public class UserHttpService {
         }
     }
 
-    @POST
-    @Consumes({ MediaType.APPLICATION_JSON})
-    @Produces({ MediaType.APPLICATION_JSON})
-    public APPResponse create(Object request) {
-            return new APPResponse(service.create(request));
-    }
-
     @PATCH
     @Path("{id}")
     @Consumes({MediaType.APPLICATION_JSON})

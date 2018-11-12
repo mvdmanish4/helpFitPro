@@ -2,15 +2,17 @@ package com.app.server.util.parser;
 
 import com.app.server.models.User.User;
 import com.app.server.models.UserInfo.UserType;
+import com.app.server.util.APPCrypt;
 import org.bson.Document;
 import org.json.JSONObject;
 
+import java.time.Instant;
 import java.util.Date;
 
 public class UserDocumentParser {
 
     public static Boolean isUserTypeSupported(JSONObject json){
-        if(UserType.getUserType(json.getInt("UserType")) != null){
+        if(UserType.getUserType(json.getInt("userType")) != null){
             return true;
         }
         return false;
@@ -33,21 +35,8 @@ public class UserDocumentParser {
         return user;
     }
 
-    public static Document convertUserToDocument(User user){
-        Document doc = new Document("firstName", user.getFirstName())
-                .append("lastName", user.getLastName())
-                .append("dateOfBirth", user.getDateOfBirth())
-                .append("UserType", user.getUserType().getId())
-                .append("emailAddress", user.getEmailAddress())
-                .append("phoneNumber", user.getPhoneNumber())
-                .append("isActive", user.getIsActive())
-                .append("timeCreated", user.getTimeCreated())
-                .append("timeUpdated", user.getTimeUpdated())
-                .append("isAdmin", user.getIsAdmin());
-        return doc;
-    }
-
-    public static User convertJsonToUser(JSONObject json){
+    //Called on Create only
+    public static User convertJsonToUser(JSONObject json, Boolean isAdmin){
         User user = new User( json.getString("firstName"),
                 json.getString("lastName"),
                 json.getString("dateOfBirth"),
@@ -55,13 +44,14 @@ public class UserDocumentParser {
                 json.getString("emailAddress"),
                 json.getString("phoneNumber"),
                 json.getBoolean("isActive"),
-                (new Date()).toString(),
-                (new Date()).toString(),
-                json.getBoolean("isAdmin"));
+                String.valueOf(Instant.now().getEpochSecond()),
+                String.valueOf(Instant.now().getEpochSecond()),
+                isAdmin);
         return user;
     }
 
-    public static Document convertJsonToUserDocument(JSONObject json){
+    //Called on Create and Update
+    public static Document convertJsonToUserDocument(JSONObject json, Boolean isAdmin) throws Exception {
         Document doc = new Document();
         if (json.has("firstName"))
             doc.append("firstName",json.getString("firstName"));
@@ -73,16 +63,19 @@ public class UserDocumentParser {
             doc.append("UserType",json.getInt("UserType"));
         if (json.has("emailAddress"))
             doc.append("emailAddress",json.getString("emailAddress"));
+        if (json.has("password"))
+            doc.append("password", APPCrypt.encrypt(json.getString("password")));
         if (json.has("phoneNumber"))
             doc.append("phoneNumber",json.getString("phoneNumber"));
         if (json.has("isActive"))
             doc.append("isActive",json.getBoolean("isActive"));
-        if (json.has("timeCreated"))
+        if (json.has("timeCreated")) {
             doc.append("timeCreated",json.getString("timeCreated"));
-        if (json.has("timeUpdated"))
-            doc.append("timeUpdated",(new Date()).toString());
-        if (json.has("isAdmin"))
-            doc.append("isAdmin",json.getBoolean("isAdmin"));
+        } else {
+            doc.append("timeCreated",String.valueOf(Instant.now().getEpochSecond()));
+        }
+        doc.append("timeUpdated",String.valueOf(Instant.now().getEpochSecond()));
+        doc.append("isAdmin", isAdmin);
         return doc;
     }
 }

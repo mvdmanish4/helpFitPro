@@ -1,9 +1,6 @@
 package com.app.server.services;
 
 import com.app.server.models.Event.Event;
-import com.app.server.models.Preferences.Ailment;
-import com.app.server.models.Preferences.Habit;
-import com.app.server.models.Preferences.Interest;
 import com.app.server.util.MongoPool;
 import com.app.server.util.parser.EventDocumentParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -14,12 +11,10 @@ import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import org.bson.Document;
 import org.bson.types.ObjectId;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**

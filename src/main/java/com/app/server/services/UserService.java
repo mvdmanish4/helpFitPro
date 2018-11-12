@@ -4,10 +4,10 @@ import com.app.server.http.exceptions.APPBadRequestException;
 import com.app.server.http.exceptions.APPInternalServerException;
 import com.app.server.http.exceptions.APPUnauthorizedException;
 import com.app.server.models.Payment.Transaction;
-import com.app.server.util.APPCrypt;
-import com.app.server.util.parser.UserDocumentParser;
 import com.app.server.models.User.User;
+import com.app.server.util.APPCrypt;
 import com.app.server.util.MongoPool;
+import com.app.server.util.parser.UserDocumentParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
@@ -74,26 +74,33 @@ public class UserService {
         if (userItem == null) {
             return null;
         }
-        User user = UserDocumentParser.convertDocumentToUser(userItem);
-        return user;
+        return UserDocumentParser.convertDocumentToUser(userItem);
     }
 
-    public User create(Object request) {
+    public User create(Object request, Boolean isAdmin) {
         try {
             JSONObject json = null;
             json = new JSONObject(ow.writeValueAsString(request));
             if(!UserDocumentParser.isUserTypeSupported(json)){
                 return null;
             }
-            User user = UserDocumentParser.convertJsonToUser(json);
-            Document doc = UserDocumentParser.convertUserToDocument(user);
+            Document doc = UserDocumentParser.convertJsonToUserDocument(json, isAdmin);
             userCollection.insertOne(doc);
+            User user = UserDocumentParser.convertJsonToUser(json, isAdmin);
             ObjectId id = (ObjectId)doc.get( "_id" );
             user.setId(id.toString());
             return user;
         } catch(JsonProcessingException e) {
             System.out.println("Failed to create a document");
             return null;
+        } catch(APPBadRequestException e) {
+            throw new APPBadRequestException(33, e.getMessage());
+        } catch(APPUnauthorizedException e) {
+            throw new APPUnauthorizedException(34, e.getMessage());
+        } catch(Exception e) {
+            System.out.println("EXCEPTION!!!!");
+            e.printStackTrace();
+            throw new APPInternalServerException(99, e.getMessage());
         }
     }
 
@@ -128,10 +135,9 @@ public class UserService {
             return null;
         } catch(APPBadRequestException e) {
             throw new APPBadRequestException(33, e.getMessage());
-        }
-        catch(APPUnauthorizedException e) {
+        } catch(APPUnauthorizedException e) {
             throw new APPUnauthorizedException(34, e.getMessage());
-        }catch(Exception e) {
+        } catch(Exception e) {
             System.out.println("EXCEPTION!!!!");
             e.printStackTrace();
             throw new APPInternalServerException(99, e.getMessage());
@@ -156,16 +162,24 @@ public class UserService {
             json = new JSONObject(ow.writeValueAsString(request));
             BasicDBObject query = new BasicDBObject();
             query.put("_id", new ObjectId(id));
-            Document set = new Document("$set", UserDocumentParser.convertJsonToUserDocument(json));
+            Boolean isAdmin = false;
+            if (json.has("isAdmin")) {
+                isAdmin = json.getBoolean("isAdmin");
+            }
+            Document set = new Document("$set", UserDocumentParser.convertJsonToUserDocument(json, isAdmin));
             userCollection.updateOne(query,set);
             return request;
-        } catch(JSONException e) {
-            System.out.println("Failed to update a document");
-            return null;
-        }
-        catch(JsonProcessingException e) {
+        } catch(JsonProcessingException e) {
             System.out.println("Failed to create a document");
             return null;
+        } catch(APPBadRequestException e) {
+            throw new APPBadRequestException(33, e.getMessage());
+        } catch(APPUnauthorizedException e) {
+            throw new APPUnauthorizedException(34, e.getMessage());
+        } catch(Exception e) {
+            System.out.println("EXCEPTION!!!!");
+            e.printStackTrace();
+            throw new APPInternalServerException(99, e.getMessage());
         }
     }
 

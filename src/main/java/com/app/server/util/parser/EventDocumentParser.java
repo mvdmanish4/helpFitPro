@@ -9,6 +9,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import javax.json.JsonObject;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -81,10 +82,12 @@ public class EventDocumentParser {
 			doc.append("isActive",json.getBoolean("isActive"));
 		if (json.has("isOpen"))
 			doc.append("isOpen",json.getBoolean("isOpen"));
-		if (json.has("timeCreated"))
+		if (json.has("timeCreated")) {
 			doc.append("timeCreated",json.getString("timeCreated"));
-		if (json.has("timeUpdated"))
-			doc.append("timeUpdated",(new Date()).toString());
+		} else {
+			doc.append("timeCreated",String.valueOf(Instant.now().getEpochSecond()));
+		}
+		doc.append("timeUpdated",String.valueOf(Instant.now().getEpochSecond()));
 
 		return doc;
 	}
@@ -97,14 +100,14 @@ public class EventDocumentParser {
 			ailmentTags.add(Ailment.getAilment(ailment));
 		}
 
-		List<Integer> interestInts = (List<Integer>) item.get("ailmentTags");
+		List<Integer> interestInts = (List<Integer>) item.get("interestTags");
 		List<Interest> interestTags = new ArrayList<Interest>();
 		for(Integer interest: interestInts){
 			interestTags.add(Interest.getInterest(interest));
 		}
 
 
-		List<Integer> habitInts = (List<Integer>) item.get("ailmentTags");
+		List<Integer> habitInts = (List<Integer>) item.get("habitTags");
 		List<Habit> habitTags = new ArrayList<Habit>();
 		for(Integer habit: habitInts){
 			habitTags.add(Habit.getHabit(habit));

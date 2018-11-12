@@ -168,20 +168,16 @@ public class FitnessUser {
         this.timeCreated = timeCreated;
     }
 
-    public String getTimeUpdated() {
-        return timeUpdated;
-    }
+    public String getTimeUpdated() {  return timeUpdated; }
 
     public void setTimeUpdated(String timeUpdated) {
         this.timeUpdated = timeUpdated;
     }
 
-    public Boolean getActive() {
-        return isActive;
-    }
+    public Boolean getIsActive() { return isActive; }
 
-    public void setActive(Boolean active) {
-        isActive = active;
+    public void setIsActive(Boolean isActive) {
+        this.isActive = isActive;
     }
 
     public User getUserDetails() {

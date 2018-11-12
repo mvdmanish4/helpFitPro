@@ -17,7 +17,6 @@ public class Expert {
     private String organizationName; //Optional
     private String cityOfService;
     private String regionOfService;
-    private String expertType;
     private List<Ailment> ailments;
     private List<Interest> interests;
     private String website; //Optional
@@ -28,13 +27,12 @@ public class Expert {
     private String timeUpdated;
     private User userDetails;
 
-    public Expert(String userId, String cityOfService, String regionOfService, String expertType,
+    public Expert(String userId, String cityOfService, String regionOfService,
                   List<Ailment> ailments, List<Interest> interests, Boolean termsConsent,
                   String timeCreated, String timeUpdated, Boolean isActive){
         this.userId = userId;
         this.cityOfService = cityOfService;
         this.regionOfService = regionOfService;
-        this.expertType = expertType;
         this.ailments = ailments;
         this.interests = interests;
         this.termsConsent = termsConsent;
@@ -77,14 +75,6 @@ public class Expert {
 
     public void setRegionOfService(String regionOfService) {
         this.regionOfService = regionOfService;
-    }
-
-    public String getExpertType() {
-        return expertType;
-    }
-
-    public void setExpertType(String expertType) {
-        this.expertType = expertType;
     }
 
     public List<Ailment> getAilments() {
