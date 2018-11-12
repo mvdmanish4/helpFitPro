@@ -117,9 +117,9 @@ public class UserService {
             return null;
         } catch(APPBadRequestException e) {
             throw new APPBadRequestException(33, e.getMessage());
-        }catch(APPUnauthorizedException e) {
+        } catch(APPUnauthorizedException e) {
             throw new APPUnauthorizedException(34, e.getMessage());
-        }catch(Exception e) {
+        } catch(Exception e) {
             System.out.println("EXCEPTION!!!!");
             e.printStackTrace();
             throw new APPInternalServerException(99, e.getMessage());

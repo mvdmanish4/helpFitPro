@@ -1,6 +1,11 @@
 package com.app.server.services;
 
+import com.app.server.http.exceptions.APPBadRequestException;
+import com.app.server.http.exceptions.APPInternalServerException;
+import com.app.server.http.exceptions.APPUnauthorizedException;
+import com.app.server.models.Event.Event;
 import com.app.server.models.User.FitnessUser;
+import com.app.server.models.User.User;
 import com.app.server.util.MongoPool;
 import com.app.server.util.parser.FitnessUserDocumentParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -13,6 +18,8 @@ import org.bson.types.ObjectId;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.List;
+
 /**
  * EventOrganizerService
  *
@@ -21,12 +28,14 @@ import org.json.JSONObject;
 public class FitnessUserService {
 
     private static FitnessUserService instance;
+    private static UserService userServiceInstance;
     private ObjectWriter ow;
     private MongoCollection<Document> fitnessUserCollection = null;
 
     private FitnessUserService() {
         this.fitnessUserCollection = MongoPool.getInstance().getCollection("fitnessUser");
         ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
+        this.userServiceInstance = UserService.getInstance();
     }
 
     public static FitnessUserService getInstance(){
@@ -47,7 +56,10 @@ public class FitnessUserService {
         if (item == null) {
             return null;
         }
-        return FitnessUserDocumentParser.convertDocumentToFitnessUser(item);
+        FitnessUser fitnessUser = FitnessUserDocumentParser.convertDocumentToFitnessUser(item);
+        User user = userServiceInstance.getUser(fitnessUser.getUserId());
+        fitnessUser.setUserDetails(user);
+        return fitnessUser;
     }
 
     public FitnessUser create(Object request, String userId) {
@@ -65,6 +77,14 @@ public class FitnessUserService {
         } catch(JsonProcessingException e) {
             System.out.println("Failed to create a document");
             return null;
+        } catch(APPBadRequestException e) {
+            throw new APPBadRequestException(33, e.getMessage());
+        } catch(APPUnauthorizedException e) {
+            throw new APPUnauthorizedException(34, e.getMessage());
+        } catch(Exception e) {
+            System.out.println("EXCEPTION!!!!");
+            e.printStackTrace();
+            throw new APPInternalServerException(99, e.getMessage());
         }
     }
 
@@ -80,13 +100,17 @@ public class FitnessUserService {
                     convertJsonToFitnessUserDocument(json, json.getString("userId")));
             fitnessUserCollection.updateOne(query,set);
             return request;
-        } catch(JSONException e) {
-            System.out.println("Failed to update a document");
-            return null;
-        }
-        catch(JsonProcessingException e) {
+        } catch(JsonProcessingException e) {
             System.out.println("Failed to create a document");
             return null;
+        } catch(APPBadRequestException e) {
+            throw new APPBadRequestException(33, e.getMessage());
+        } catch(APPUnauthorizedException e) {
+            throw new APPUnauthorizedException(34, e.getMessage());
+        } catch(Exception e) {
+            System.out.println("EXCEPTION!!!!");
+            e.printStackTrace();
+            throw new APPInternalServerException(99, e.getMessage());
         }
     }
 

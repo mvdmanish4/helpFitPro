@@ -1,5 +1,8 @@
 package com.app.server.services;
 
+import com.app.server.http.exceptions.APPBadRequestException;
+import com.app.server.http.exceptions.APPInternalServerException;
+import com.app.server.http.exceptions.APPUnauthorizedException;
 import com.app.server.models.HealthRegime.Regime;
 import com.app.server.models.HealthRegime.RegimeProgram;
 import com.app.server.util.MongoPool;
@@ -104,6 +107,14 @@ public class RegimeProgramService {
         } catch(JsonProcessingException e) {
             System.out.println("Failed to create a document");
             return null;
+        } catch(APPBadRequestException e) {
+            throw new APPBadRequestException(33, e.getMessage());
+        } catch(APPUnauthorizedException e) {
+            throw new APPUnauthorizedException(34, e.getMessage());
+        } catch(Exception e) {
+            System.out.println("EXCEPTION!!!!");
+            e.printStackTrace();
+            throw new APPInternalServerException(99, e.getMessage());
         }
     }
 

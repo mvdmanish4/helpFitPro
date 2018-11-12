@@ -1,9 +1,6 @@
 package com.app.server.services;
 
-import com.app.server.http.exceptions.APPBadRequestException;
-import com.app.server.http.exceptions.APPConflictRequestException;
-import com.app.server.http.exceptions.APPInternalServerException;
-import com.app.server.http.exceptions.APPNotFoundException;
+import com.app.server.http.exceptions.*;
 import com.app.server.models.Session.Session;
 import com.app.server.models.User.User;
 import com.app.server.models.UserInfo.UserType;
@@ -68,14 +65,17 @@ public class SessionService {
             User user = UserDocumentParser.convertDocumentToUser(item);
             user.setId(item.getObjectId("_id").toString());
             return new Session(user);
-        } catch (JsonProcessingException e) {
+        } catch(JsonProcessingException e) {
+            System.out.println("Failed to create a document");
+            return null;
+        } catch(APPBadRequestException e) {
             throw new APPBadRequestException(33, e.getMessage());
-        } catch (APPBadRequestException e) {
-            throw e;
-        } catch (APPNotFoundException e) {
-            throw e;
-        } catch (Exception e) {
-            throw new APPInternalServerException(0, e.getMessage());
+        } catch(APPUnauthorizedException e) {
+            throw new APPUnauthorizedException(34, e.getMessage());
+        } catch(Exception e) {
+            System.out.println("EXCEPTION!!!!");
+            e.printStackTrace();
+            throw new APPInternalServerException(99, e.getMessage());
         }
     }
 
@@ -100,14 +100,17 @@ public class SessionService {
                 return new Session(createFitnessUser(request));
             }
             return null;
-        } catch (JsonProcessingException e) {
+        } catch(JsonProcessingException e) {
+            System.out.println("Failed to create a document");
+            return null;
+        } catch(APPBadRequestException e) {
             throw new APPBadRequestException(33, e.getMessage());
-        } catch (APPBadRequestException e) {
-            throw e;
-        } catch (APPNotFoundException e) {
-            throw e;
-        } catch (Exception e) {
-            throw new APPInternalServerException(0, e.getMessage());
+        } catch(APPUnauthorizedException e) {
+            throw new APPUnauthorizedException(34, e.getMessage());
+        } catch(Exception e) {
+            System.out.println("EXCEPTION!!!!");
+            e.printStackTrace();
+            throw new APPInternalServerException(99, e.getMessage());
         }
     }
 

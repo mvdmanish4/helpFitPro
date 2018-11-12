@@ -1,5 +1,7 @@
 package com.app.server.services;
 
+import com.app.server.http.exceptions.APPBadRequestException;
+import com.app.server.http.exceptions.APPInternalServerException;
 import com.app.server.http.exceptions.APPUnauthorizedException;
 import com.app.server.models.HealthRegime.Regime;
 import com.app.server.util.MongoPool;
@@ -125,6 +127,14 @@ public class RegimeService {
         } catch(JsonProcessingException e) {
             System.out.println("Failed to create a document");
             return null;
+        } catch(APPBadRequestException e) {
+            throw new APPBadRequestException(33, e.getMessage());
+        } catch(APPUnauthorizedException e) {
+            throw new APPUnauthorizedException(34, e.getMessage());
+        } catch(Exception e) {
+            System.out.println("EXCEPTION!!!!");
+            e.printStackTrace();
+            throw new APPInternalServerException(99, e.getMessage());
         }
     }
 
@@ -150,12 +160,17 @@ public class RegimeService {
             Document set = new Document("$set", doc);
             regimeCollection.updateOne(query,set);
             return request;
-        } catch(JSONException e) {
-            System.out.println("Failed to update a document");
-            return null;
         } catch(JsonProcessingException e) {
             System.out.println("Failed to create a document");
             return null;
+        } catch(APPBadRequestException e) {
+            throw new APPBadRequestException(33, e.getMessage());
+        } catch(APPUnauthorizedException e) {
+            throw new APPUnauthorizedException(34, e.getMessage());
+        } catch(Exception e) {
+            System.out.println("EXCEPTION!!!!");
+            e.printStackTrace();
+            throw new APPInternalServerException(99, e.getMessage());
         }
     }
 
