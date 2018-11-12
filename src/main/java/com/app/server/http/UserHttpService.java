@@ -11,6 +11,8 @@ import com.fasterxml.jackson.databind.ObjectWriter;
 
 import javax.annotation.security.PermitAll;
 import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -72,7 +74,6 @@ public class UserHttpService {
     @Produces({MediaType.APPLICATION_JSON})
     public APPResponse update(@PathParam("id") String id, Object request){
         return new APPResponse(service.update(id,request));
-
     }
 
     @DELETE
@@ -88,5 +89,21 @@ public class UserHttpService {
 
         return new APPResponse(service.deleteAll());
     }
+
+    @POST
+    @Path("{id}/transactions")
+    @Consumes({ MediaType.APPLICATION_JSON})
+    @Produces({ MediaType.APPLICATION_JSON})
+    public APPResponse createTranscation(@Context HttpHeaders headers, @PathParam("id") String id, Object request) {
+        return new APPResponse(service.createTranscation(headers, id, request));
+    }
+
+    @GET
+    @Path("{id}/transactions")
+    @Produces({ MediaType.APPLICATION_JSON})
+    public APPResponse getUserTransactions(@Context HttpHeaders headers,@PathParam("id") String id) {
+        return new APPResponse(service.getUserTransactions(headers, id));
+    }
+
 
 }

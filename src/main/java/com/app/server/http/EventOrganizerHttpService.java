@@ -108,5 +108,4 @@ public class EventOrganizerHttpService {
 
         return new APPResponse(organizerService.deleteAll());
     }
-
 }

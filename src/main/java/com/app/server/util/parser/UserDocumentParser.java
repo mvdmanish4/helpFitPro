@@ -10,7 +10,7 @@ import java.util.Date;
 public class UserDocumentParser {
 
     public static Boolean isUserTypeSupported(JSONObject json){
-        if(UserType.getValue(json.getInt("UserType")) != null){
+        if(UserType.getUserType(json.getInt("UserType")) != null){
             return true;
         }
         return false;
@@ -21,7 +21,7 @@ public class UserDocumentParser {
                 item.getString("firstName"),
                 item.getString("lastName"),
                 item.getString("dateOfBirth"),
-                UserType.getValue(item.getInteger("UserType").intValue()),
+                UserType.getUserType(item.getDouble("UserType").intValue()),
                 item.getString("emailAddress"),
                 item.getString("phoneNumber"),
                 item.getBoolean("isActive"),
@@ -51,7 +51,7 @@ public class UserDocumentParser {
         User user = new User( json.getString("firstName"),
                 json.getString("lastName"),
                 json.getString("dateOfBirth"),
-                UserType.getValue(json.getInt("UserType")),
+                UserType.getUserType(json.getInt("UserType")),
                 json.getString("emailAddress"),
                 json.getString("phoneNumber"),
                 json.getBoolean("isActive"),

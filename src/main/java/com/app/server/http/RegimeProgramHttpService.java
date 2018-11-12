@@ -19,7 +19,6 @@ public class RegimeProgramHttpService {
     private RegimeProgramService service;
     private ObjectWriter ow;
 
-
     public RegimeProgramHttpService() {
         service = RegimeProgramService.getInstance();
         ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
@@ -53,6 +52,12 @@ public class RegimeProgramHttpService {
         return new APPResponse(service.getRegimeinRegimeProgram(id));
     }
 
+    @POST
+    @Consumes({ MediaType.APPLICATION_JSON})
+    @Produces({ MediaType.APPLICATION_JSON})
+    public APPResponse create(Object request) {
+        return new APPResponse(service.create(request));
+    }
 
     @PATCH
     @Path("/{id}/regime/{idtwo}")
@@ -61,5 +66,12 @@ public class RegimeProgramHttpService {
     public APPResponse createRegimeAsSub(@PathParam("id") String id,@PathParam("idtwo") String idtwo, Object request) {
 
         return new APPResponse(service.updateRegimeAsSubResource(id, idtwo, request));
+    }
+
+    @DELETE
+    @Path("{id}")
+    @Produces({ MediaType.APPLICATION_JSON})
+    public APPResponse delete(@PathParam("id") String id) {
+        return new APPResponse(service.delete(id));
     }
 }

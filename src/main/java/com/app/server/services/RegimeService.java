@@ -1,6 +1,10 @@
 package com.app.server.services;
 
+import com.app.server.http.exceptions.APPBadRequestException;
+import com.app.server.http.exceptions.APPInternalServerException;
+import com.app.server.http.exceptions.APPUnauthorizedException;
 import com.app.server.models.HealthRegime.Regime;
+import com.app.server.util.APPCrypt;
 import com.app.server.util.MongoPool;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -14,6 +18,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import javax.ws.rs.core.HttpHeaders;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -40,15 +45,26 @@ public class RegimeService {
     public ArrayList<Regime> getAll() {
         ArrayList<Regime> regimeList = new ArrayList<Regime>();
 
-        FindIterable<Document> results = this.regimeCollection.find();
-        if (results == null) {
-            return regimeList;
-        }
-        for (Document item : results) {
-            Regime regime = convertDocumentToRegime(item);
-            regimeList.add(regime);
-        }
+            FindIterable<Document> results = this.regimeCollection.find();
+            if (results == null) {
+                return regimeList;
+            }
+            for (Document item : results) {
+                Regime regime = convertDocumentToRegime(item);
+                regimeList.add(regime);
+            }
         return regimeList;
+    }
+
+    private void checkAuthentication(HttpHeaders headers,String id) throws Exception{
+        List<String> authHeaders = headers.getRequestHeader(HttpHeaders.AUTHORIZATION);
+        if (authHeaders == null)
+            throw new APPUnauthorizedException(70,"No Authorization Headers");
+        String token = authHeaders.get(0);
+        //String clearToken = APPCrypt.decrypt(token);
+        if (id.compareTo(token) != 0) {
+            throw new APPUnauthorizedException(71,"Invalid token. Please try getting a new token");
+        }
     }
 
     public List<Regime> getRegimeForOneRegimeProgram(List<String> regimesID){
