@@ -57,6 +57,7 @@ public class FitnessUserService {
             json = new JSONObject(ow.writeValueAsString(request));
             Document doc = FitnessUserDocumentParser.convertJsonToFitnessUserDocument(json, userId);
             fitnessUserCollection.insertOne(doc);
+            //TODO: fix data inconsistency
             FitnessUser fitnessUser = FitnessUserDocumentParser.convertJsonToFitnessUser(json, userId);
             ObjectId id = (ObjectId)doc.get("_id");
             fitnessUser.setId(id.toString());
@@ -79,7 +80,6 @@ public class FitnessUserService {
                     convertJsonToFitnessUserDocument(json, json.getString("userId")));
             fitnessUserCollection.updateOne(query,set);
             return request;
-
         } catch(JSONException e) {
             System.out.println("Failed to update a document");
             return null;

@@ -57,8 +57,8 @@ public class EventOrganizerDocumentParser {
                 json.getString("website"),
                 regionList,
                 json.getString("titleInOrganization"),
-                (new Date()).toString(),
-                (new Date()).toString(),
+                String.valueOf(Instant.now().getEpochSecond()),
+                String.valueOf(Instant.now().getEpochSecond()),
                 json.getBoolean("isActive"));
         return eventOrganizer;
     }
