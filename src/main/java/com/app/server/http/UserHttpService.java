@@ -79,7 +79,6 @@ public class UserHttpService {
     @DELETE
     @Produces({ MediaType.APPLICATION_JSON})
     public APPResponse delete() {
-
         return new APPResponse(service.deleteAll());
     }
 
@@ -98,5 +97,26 @@ public class UserHttpService {
         return new APPResponse(service.getUserTransactions(headers, id));
     }
 
+    @GET
+    @Path("{id}/regimeProgram")
+    @Produces({ MediaType.APPLICATION_JSON})
+    public APPResponse getUserRegimeProgram(@Context HttpHeaders headers,@PathParam("id") String id) {
+        return new APPResponse(service.getUserRegimeProgram(headers, id));
+    }
+
+    @POST
+    @Path("{id}/regimeProgram")
+    @Consumes({ MediaType.APPLICATION_JSON})
+    @Produces({ MediaType.APPLICATION_JSON})
+    public APPResponse createUserRegimeProgram(@Context HttpHeaders headers, @PathParam("id") String id, Object request) {
+        return new APPResponse(service.createUserRegimeProgram(headers, id, request));
+    }
+
+    @DELETE
+    @Path("{id}/regimeProgram")
+    @Produces({ MediaType.APPLICATION_JSON})
+    public APPResponse delete(@Context HttpHeaders headers, @PathParam("id") String id) {
+        return new APPResponse(service.deleteUserRegimeProgram(headers, id));
+    }
 
 }
