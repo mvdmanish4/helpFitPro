@@ -100,8 +100,8 @@ public class FitnessUserDocumentParser {
                 habitTags,
                 json.getBoolean("termsConsent"),
                 json.getBoolean("receiveEmailNotifications"),
-                json.getString("timeCreated"),
-                json.getString("timeUpdated"),
+                String.valueOf(Instant.now().getEpochSecond()),
+                String.valueOf(Instant.now().getEpochSecond()),
                 json.getBoolean("isActive"));
 
         return fitnessUser;

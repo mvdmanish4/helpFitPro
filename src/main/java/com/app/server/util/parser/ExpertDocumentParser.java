@@ -71,8 +71,8 @@ public class ExpertDocumentParser {
                 ailmentTags,
                 interestTags,
                 json.getBoolean("termsConsent"),
-                json.getString("timeCreated"),
-                json.getString("timeUpdated"),
+                String.valueOf(Instant.now().getEpochSecond()),
+                String.valueOf(Instant.now().getEpochSecond()),
                 json.getBoolean("isActive"));
 
         return expert;
