@@ -1,5 +1,8 @@
 package com.app.server.services;
 
+import com.app.server.http.exceptions.APPBadRequestException;
+import com.app.server.http.exceptions.APPInternalServerException;
+import com.app.server.http.exceptions.APPUnauthorizedException;
 import com.app.server.models.Event.Event;
 import com.app.server.util.MongoPool;
 import com.app.server.util.parser.EventDocumentParser;
@@ -136,6 +139,14 @@ public class EventService {
         } catch(JsonProcessingException e) {
             System.out.println("Failed to create a document");
             return null;
+        } catch(APPBadRequestException e) {
+            throw new APPBadRequestException(33, e.getMessage());
+        } catch(APPUnauthorizedException e) {
+            throw new APPUnauthorizedException(34, e.getMessage());
+        } catch(Exception e) {
+            System.out.println("EXCEPTION!!!!");
+            e.printStackTrace();
+            throw new APPInternalServerException(99, e.getMessage());
         }
     }
 
@@ -151,13 +162,17 @@ public class EventService {
             eventCollection.updateOne(query,set);
             return request;
 
-        } catch(JSONException e) {
-            System.out.println("Failed to update a document");
-            return null;
-        }
-        catch(JsonProcessingException e) {
+        } catch(JsonProcessingException e) {
             System.out.println("Failed to create a document");
             return null;
+        } catch(APPBadRequestException e) {
+            throw new APPBadRequestException(33, e.getMessage());
+        } catch(APPUnauthorizedException e) {
+            throw new APPUnauthorizedException(34, e.getMessage());
+        } catch(Exception e) {
+            System.out.println("EXCEPTION!!!!");
+            e.printStackTrace();
+            throw new APPInternalServerException(99, e.getMessage());
         }
     }
 
