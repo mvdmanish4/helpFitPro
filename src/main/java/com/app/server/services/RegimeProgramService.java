@@ -14,6 +14,7 @@ import org.bson.types.ObjectId;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.security.PublicKey;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -48,6 +49,22 @@ public class RegimeProgramService {
         for (Document item : results) {
             RegimeProgram regimeProgram = convertDocumentToRegimeProgram(item);
             regimeList.add(regimeProgram);
+        }
+        return regimeList;
+    }
+
+    public ArrayList<RegimeProgram> getUserRegimeProgram(String id){
+        ArrayList<RegimeProgram> regimeList = new ArrayList<RegimeProgram>();
+
+        FindIterable<Document> results = this.regimeProgramCollection.find();
+        if (results == null) {
+            return regimeList;
+        }
+        for (Document item : results) {
+            RegimeProgram regimeProgram = convertDocumentToRegimeProgram(item);
+            if(regimeProgram.getUserID().equals(id)){
+                regimeList.add(regimeProgram);
+            }
         }
         return regimeList;
     }

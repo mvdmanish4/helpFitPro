@@ -14,6 +14,7 @@ import org.bson.types.ObjectId;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import javax.ws.rs.core.UriInfo;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,6 +45,43 @@ public class EventService {
         }
         return instance;
     }
+
+    public ArrayList<Event> getEventsByType(UriInfo info){
+        ArrayList<Event> eventList = new ArrayList<Event>();
+        String eventVal = info.getQueryParameters().getFirst("eventFilter");
+        int val = Integer.parseInt(info.getQueryParameters().getFirst("value"));
+        FindIterable<Document> results = this.eventCollection.find();
+        if (results == null) {
+            return eventList;
+        }
+        for (Document item : results) {
+            Event event = EventDocumentParser.convertDocumentToEvent(item);
+            if(eventVal.equalsIgnoreCase("ailments")){
+                List<Ailment> ailmentsVal = event.getAilmentTags();
+                for(Ailment ail:ailmentsVal){
+                    if(ail.getId() == val){
+                        eventList.add(event);
+                    }
+                }
+            }else if(eventVal.equalsIgnoreCase("interest")){
+                List<Interest> interestsVal = event.getInterestTags();
+                for(Interest interest:interestsVal){
+                    if(interest.getId() == val){
+                        eventList.add(event);
+                    }
+                }
+            }else {
+                List<Habit> habitsVal = event.getHabitTags();
+                for(Habit habit:habitsVal){
+                    if(habit.getId() == val){
+                        eventList.add(event);
+                    }
+                }
+            }
+        }
+        return eventList;
+    }
+
 
     public ArrayList<Event> getAllEvents() {
         ArrayList<Event> eventList = new ArrayList<Event>();

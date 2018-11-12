@@ -11,8 +11,10 @@ import com.fasterxml.jackson.databind.ObjectWriter;
 
 import javax.annotation.security.PermitAll;
 import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
 
 @Path("event")
 
@@ -37,7 +39,6 @@ public class EventHttpService {
     @GET
     @Produces({ MediaType.APPLICATION_JSON})
     public APPResponse getAll() {
-
         return new APPResponse(service.getAllEvents());
     }
 
@@ -58,6 +59,13 @@ public class EventHttpService {
             throw new APPInternalServerException(0,"Something went wrong.");
         }
 
+    }
+
+    @GET
+    @Path("/eventby")
+    @Produces({ MediaType.APPLICATION_JSON})
+    public APPResponse getEventsByType(@Context UriInfo info) {
+        return new APPResponse(service.getEventsByType(info));
     }
 
     @POST
