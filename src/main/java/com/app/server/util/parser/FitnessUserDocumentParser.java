@@ -124,12 +124,13 @@ public class FitnessUserDocumentParser {
             doc.append("zipCode",json.getString("zipCode"));
 
         if (json.has("ailmentTags")){
-            ArrayList<Ailment> ailmentTags = new ArrayList<Ailment>();
+            ArrayList<Integer> ailmentTags = new ArrayList<Integer>();
             JSONArray ailmentArray = json.getJSONArray("ailmentTags");
             if(ailmentArray != null){
                 int len = ailmentArray.length();
                 for(int i=0;i<len;i++){
-                    ailmentTags.add(Ailment.getAilment(ailmentArray.getInt(i)));
+                    if(Ailment.getAilment(ailmentArray.getInt(i)) != null)
+                        ailmentTags.add(ailmentArray.getInt(i));
                 }
             }
             doc.append("ailmentTags",ailmentTags);
@@ -137,24 +138,26 @@ public class FitnessUserDocumentParser {
 
 
         if (json.has("interestTags")){
-            ArrayList<Interest> interestTags = new ArrayList<Interest>();
+            ArrayList<Integer> interestTags = new ArrayList<Integer>();
             JSONArray interestArray = json.getJSONArray("interestTags");
             if(interestArray != null){
                 int len = interestArray.length();
                 for(int i=0;i<len;i++){
-                    interestTags.add(Interest.getInterest(interestArray.getInt(i)));
+                    if(Interest.getInterest(interestArray.getInt(i)) != null)
+                        interestTags.add(interestArray.getInt(i));
                 }
             }
             doc.append("interestTags",interestTags);
         }
 
         if (json.has("habitTags")){
-            ArrayList<Habit> habitTags = new ArrayList<Habit>();
+            ArrayList<Integer> habitTags = new ArrayList<Integer>();
             JSONArray habitArray = json.getJSONArray("habitTags");
             if(habitArray != null){
                 int len = habitArray.length();
                 for(int i=0;i<len;i++){
-                    habitTags.add(Habit.getHabit(habitArray.getInt(i)));
+                    if(Habit.getHabit(habitArray.getInt(i)) != null)
+                        habitTags.add(habitArray.getInt(i));
                 }
             }
             doc.append("habitTags",habitTags);

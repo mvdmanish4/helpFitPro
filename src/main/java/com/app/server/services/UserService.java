@@ -84,6 +84,7 @@ public class UserService {
         try {
             JSONObject json = null;
             json = new JSONObject(ow.writeValueAsString(request));
+            validateRequest(json);
             if(!UserDocumentParser.isUserTypeSupported(json)){
                 return null;
             }
@@ -256,5 +257,21 @@ public class UserService {
     public Object deleteAll() {
         userCollection.deleteMany(new BasicDBObject());
         return new JSONObject();
+    }
+
+    private Boolean validateRequest(JSONObject json){
+        if (!json.has("firstName"))
+            throw new APPBadRequestException(55, "firstName Missing");
+        if (!json.has("lastName"))
+            throw new APPBadRequestException(55, "lastName Missing");
+        if (!json.has("dateOfBirth"))
+            throw new APPBadRequestException(55, "dateOfBirth Missing");
+        if (!json.has("phoneNumber"))
+            throw new APPBadRequestException(55, "phoneNumber Missing");
+        if (!json.has("isActive"))
+            throw new APPBadRequestException(55, "isActive Missing");
+        if (!json.has("userType"))
+            throw new APPBadRequestException(55, "userType Missing");
+        return true;
     }
 }

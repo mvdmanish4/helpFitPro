@@ -3,6 +3,7 @@ package com.app.server.services;
 import com.app.server.http.exceptions.APPBadRequestException;
 import com.app.server.http.exceptions.APPInternalServerException;
 import com.app.server.http.exceptions.APPUnauthorizedException;
+import com.app.server.models.Preferences.Ailment;
 import com.app.server.models.User.Expert;
 import com.app.server.models.User.User;
 import com.app.server.util.MongoPool;
@@ -14,8 +15,11 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.client.MongoCollection;
 import org.bson.Document;
 import org.bson.types.ObjectId;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
 
 /**
  * EventOrganizerService
@@ -62,8 +66,10 @@ public class ExpertService {
     public Expert create(Object request, String userId) {
 
         try {
+        	// TODO Validate for all user type before creating the users (else there will be orphan users)
             JSONObject json = null;
             json = new JSONObject(ow.writeValueAsString(request));
+			validateRequest(json);
             Document doc = ExpertDocumentParser.convertJsonToExpertDocument(json, userId);
             expertCollection.insertOne(doc);
             Expert expert = ExpertDocumentParser.convertJsonToExpert(json, userId);
@@ -72,6 +78,7 @@ public class ExpertService {
             return expert;
         } catch(JsonProcessingException e) {
 			System.out.println("Failed to create a document");
+			e.printStackTrace();
 			return null;
 		} catch(APPBadRequestException e) {
 			throw new APPBadRequestException(33, e.getMessage());
@@ -122,4 +129,16 @@ public class ExpertService {
         expertCollection.deleteMany(new BasicDBObject());
         return new JSONObject();
     }
+
+    public Boolean validateRequest(JSONObject json){
+		if (!json.has("cityOfService"))
+			throw new APPBadRequestException(55, "city Missing");
+		if (!json.has("regionOfService"))
+			throw new APPBadRequestException(55, "regions Missing");
+		if (!json.has("ailmentTags"))
+			throw new APPBadRequestException(55, "aliments Missing");
+		if (!json.has("termsConsent"))
+			throw new APPBadRequestException(55, "terms Consent Missing");
+		return true;
+	}
 }

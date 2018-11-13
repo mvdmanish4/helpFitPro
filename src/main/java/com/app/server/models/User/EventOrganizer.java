@@ -24,13 +24,10 @@ public class EventOrganizer {
     private User userDetails = null;
     private List<Event> events = new ArrayList<>();
 
-    public EventOrganizer(String userId, String organizationName, String website, List<RegionsOfService> regionsOfService,
-                          String titleInOrganization, String timeCreated, String timeUpdated, Boolean isActive){
+    public EventOrganizer(String userId, List<RegionsOfService> regionsOfService,
+                          String timeCreated, String timeUpdated, Boolean isActive){
         this.userId = userId;
-        this.organizationName = organizationName;
-        this.website = website;
         this.regionsOfService = regionsOfService;
-        this.titleInOrganization = titleInOrganization;
         this.timeCreated = timeCreated;
         this.timeUpdated = timeUpdated;
         this.isActive = isActive;
@@ -81,4 +78,17 @@ public class EventOrganizer {
     public User getUserDetails() { return userDetails; }
 
     public List<Event> getEvents() { return events; }
+
+
+    public void setOrganizationName(String organizationName) {
+        this.organizationName = organizationName;
+    }
+
+    public void setWebsite(String website) {
+        this.website = website;
+    }
+
+    public void setTitleInOrganization(String titleInOrganization) {
+        this.titleInOrganization = titleInOrganization;
+    }
 }

@@ -23,7 +23,7 @@ public class UserDocumentParser {
                 item.getString("firstName"),
                 item.getString("lastName"),
                 item.getString("dateOfBirth"),
-                UserType.getUserType(item.getDouble("UserType").intValue()),
+                UserType.getUserType(item.getInteger("userType").intValue()),
                 item.getString("emailAddress"),
                 item.getString("phoneNumber"),
                 item.getBoolean("isActive"),
@@ -40,7 +40,7 @@ public class UserDocumentParser {
         User user = new User( json.getString("firstName"),
                 json.getString("lastName"),
                 json.getString("dateOfBirth"),
-                UserType.getUserType(json.getInt("UserType")),
+                UserType.getUserType(json.getInt("userType")),
                 json.getString("emailAddress"),
                 json.getString("phoneNumber"),
                 json.getBoolean("isActive"),
@@ -59,8 +59,8 @@ public class UserDocumentParser {
             doc.append("lastName",json.getString("lastName"));
         if (json.has("dateOfBirth"))
             doc.append("dateOfBirth",json.getString("dateOfBirth"));
-        if (json.has("UserType"))
-            doc.append("UserType",json.getInt("UserType"));
+        if (json.has("userType"))
+            doc.append("userType",json.getInt("userType"));
         if (json.has("emailAddress"))
             doc.append("emailAddress",json.getString("emailAddress"));
         if (json.has("password"))

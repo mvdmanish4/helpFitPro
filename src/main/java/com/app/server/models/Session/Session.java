@@ -7,24 +7,19 @@ import java.sql.Timestamp;
 
 public class Session {
 
-    String id;
+    //token not named as token
+    String mnshv;
     String firstName;
     String lastName;
+    String userType;
 
     public Session(User user) throws Exception{
         Timestamp now = new Timestamp(System.currentTimeMillis());
         //this.id = APPCrypt.encrypt(user.getId()+Long.toString(now.getTime())+Math.random());
-        this.id = APPCrypt.encrypt(user.getId());
+        this.mnshv = APPCrypt.encrypt(user.getId());
         this.firstName = user.getFirstName();
         this.lastName = user.getLastName();
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
+        this.userType = user.getUserType().name();
     }
 
     public String getFirstName() {

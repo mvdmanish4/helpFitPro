@@ -29,15 +29,21 @@ public class EventOrganizerDocumentParser {
         List<RegionsOfService> listItems = (List<RegionsOfService>) item.get("regionsOfService");
         EventOrganizer eventOrganizer = new EventOrganizer(
                 item.getString("userId"),
-                item.getString("organizationName"),
-                item.getString("website"),
                 listItems,
-                item.getString("titleInOrganization"),
                 item.getString("timeCreated"),
                 item.getString("timeUpdated"),
                 item.getBoolean("isActive")
         );
         eventOrganizer.setId(item.getObjectId("_id").toString());
+        if(item.getString("organizationName") != null){
+            eventOrganizer.setOrganizationName(item.getString("organizationName"));
+        }
+        if(item.getString("website") != null){
+            eventOrganizer.setOrganizationName(item.getString("website"));
+        }
+        if(item.getString("titleInOrganization") != null){
+            eventOrganizer.setOrganizationName(item.getString("titleInOrganization"));
+        }
         return eventOrganizer;
     }
 
@@ -53,13 +59,20 @@ public class EventOrganizerDocumentParser {
 
         EventOrganizer eventOrganizer = new EventOrganizer(
                 userId,
-                json.getString("organizationName"),
-                json.getString("website"),
                 regionList,
-                json.getString("titleInOrganization"),
                 String.valueOf(Instant.now().getEpochSecond()),
                 String.valueOf(Instant.now().getEpochSecond()),
                 json.getBoolean("isActive"));
+
+        if(json.has("organizationName"))
+            eventOrganizer.setOrganizationName(json.getString("organizationName"));
+
+        if(json.has("website"))
+            eventOrganizer.setOrganizationName(json.getString("website"));
+
+        if(json.has("titleInOrganization"))
+            eventOrganizer.setOrganizationName(json.getString("titleInOrganization"));
+
         return eventOrganizer;
     }
 
@@ -67,7 +80,7 @@ public class EventOrganizerDocumentParser {
         Document doc = new Document();
         doc.append("userId", userId);
         if (json.has("organizationName"))
-            doc.append("organizationName",json.getString("organizationName"));
+            doc.append("organizationName", json.getString("organizationName"));
         if (json.has("website"))
             doc.append("website",json.getString("website"));
         if (json.has("regionsOfService")){

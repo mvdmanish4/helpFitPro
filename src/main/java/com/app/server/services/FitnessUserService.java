@@ -4,6 +4,9 @@ import com.app.server.http.exceptions.APPBadRequestException;
 import com.app.server.http.exceptions.APPInternalServerException;
 import com.app.server.http.exceptions.APPUnauthorizedException;
 import com.app.server.models.Event.Event;
+import com.app.server.models.Preferences.Ailment;
+import com.app.server.models.Preferences.Habit;
+import com.app.server.models.Preferences.Interest;
 import com.app.server.models.User.FitnessUser;
 import com.app.server.models.User.User;
 import com.app.server.util.MongoPool;
@@ -15,9 +18,11 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.client.MongoCollection;
 import org.bson.Document;
 import org.bson.types.ObjectId;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -67,6 +72,7 @@ public class FitnessUserService {
         try {
             JSONObject json = null;
             json = new JSONObject(ow.writeValueAsString(request));
+            validateRequest(json);
             Document doc = FitnessUserDocumentParser.convertJsonToFitnessUserDocument(json, userId);
             fitnessUserCollection.insertOne(doc);
             //TODO: fix data inconsistency
@@ -121,9 +127,34 @@ public class FitnessUserService {
         return new JSONObject();
     }
 
-
     public Object deleteAll() {
         fitnessUserCollection.deleteMany(new BasicDBObject());
         return new JSONObject();
+    }
+
+    public Boolean validateRequest(JSONObject json){
+        if (!json.has("gender"))
+            throw new APPBadRequestException(55, "gender Missing");
+        if (!json.has("height"))
+            throw new APPBadRequestException(55, "height Missing");
+        if (!json.has("weight"))
+            throw new APPBadRequestException(55, "weight Missing");
+        if (!json.has("city"))
+            throw new APPBadRequestException(55, "city Missing");
+        if (!json.has("state"))
+            throw new APPBadRequestException(55, "state Missing");
+        if (!json.has("zipCode"))
+            throw new APPBadRequestException(55, "zipCode Missing");
+        if (!json.has("ailmentTags"))
+            throw new APPBadRequestException(55, "ailments Missing");
+        if (!json.has("interestTags"))
+            throw new APPBadRequestException(55, "interests Missing");
+        if (!json.has("habitTags"))
+            throw new APPBadRequestException(55, "habits Missing");
+        if (!json.has("termsConsent"))
+            throw new APPBadRequestException(55, "terms Missing");
+        if (!json.has("receiveEmailNotifications"))
+            throw new APPBadRequestException(55, "receive email notif Missing");
+        return true;
     }
 }
