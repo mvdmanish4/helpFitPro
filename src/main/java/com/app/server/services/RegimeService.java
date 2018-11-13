@@ -22,6 +22,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import static com.app.server.util.parser.RegimeParser.convertDocumentToRegime;
+import static com.app.server.util.parser.RegimeParser.convertJsonToRegime;
+import static com.app.server.util.parser.RegimeParser.convertRegimeToDocument;
+
 public class RegimeService {
 
     private static RegimeService self;
@@ -163,69 +167,7 @@ public class RegimeService {
     public Object delete(String id) {
         BasicDBObject query = new BasicDBObject();
         query.put("_id", new ObjectId(id));
-
         regimeCollection.deleteOne(query);
-
         return new JSONObject();
-    }
-
-    private Document convertRegimeToDocument(Regime regime){
-        Document doc = new Document("helpFitID", "reg")
-                .append("name", regime.getName())
-                .append("description", regime.getDescription())
-                .append("regimeType", regime.getRegimeType())
-                .append("timeRequiredWeeks", regime.getTimeRequiredWeeks())
-                .append("ailmentTags", regime.getAilmentTags())
-                .append("interestTags", regime.getInsterestTags())
-                .append("habitsTags", regime.getHabitsTags())
-                .append("isActive", regime.getIsActive()).append("timeCreated", new Date()).append("timeUpdated", regime.getTimeUpdated());
-        return doc;
-    }
-
-    private Regime convertDocumentToRegime(Document item) {
-        List<String> ailments = (List<String>) item.get("ailmentTags");
-        List<String> interests = (List<String>) item.get("interestTags");
-        List<String> habits = (List<String>) item.get("habitsTags");
-        Regime regime = new Regime(item.getObjectId("_id").toString(),item.getString("helpFitID"),
-                item.getString("name"),
-                item.getString("description"),
-                item.getString("regimeType"),
-                item.getString("timeRequiredWeeks"),
-                ailments,
-                interests,
-                habits,
-                item.getString("isActive"),
-                item.getString("timeCreated"),
-                item.getString("timeUpdated"));
-        return regime;
-    }
-
-    private Regime convertJsonToRegime(JSONObject json){
-        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-        Date date = new Date();
-        Regime regime = new Regime( json.getString("id"),
-                json.getString("helpFitID"),
-                json.getString("name"),
-                json.getString("description"),
-                json.getString("regimeType"),
-                json.getString("timeRequiredWeeks"),
-                jsonArraytoList(json.getJSONArray("ailmentTags")),
-                jsonArraytoList(json.getJSONArray("insterestTags")),
-                jsonArraytoList(json.getJSONArray("habitsTags")),
-                json.getString("isActive"),
-                json.has("timeCreated")?json.getString("isFulfilled"): String.valueOf(Instant.now().getEpochSecond()),
-                String.valueOf(Instant.now().getEpochSecond()));
-        return regime;
-    }
-
-    private List<String> jsonArraytoList(JSONArray jsonArray){
-        ArrayList<String> list = new ArrayList<String>();
-        if (jsonArray != null) {
-            int len = jsonArray.length();
-            for (int i=0;i<len;i++){
-                list.add(jsonArray.get(i).toString());
-            }
-        }
-        return list;
     }
 }
