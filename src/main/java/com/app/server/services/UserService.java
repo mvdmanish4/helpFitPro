@@ -253,7 +253,6 @@ public class UserService {
        return obj;
     }
 
-
     public Object deleteAll() {
         userCollection.deleteMany(new BasicDBObject());
         return new JSONObject();

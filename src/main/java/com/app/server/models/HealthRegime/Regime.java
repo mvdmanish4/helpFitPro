@@ -15,10 +15,10 @@ public class Regime {
     List<String> insterestTags;
     List<String> habitsTags;
     String isActive;
-    Date timeCreated;
-    Date timeUpdated;
+    String timeCreated;
+    String timeUpdated;
 
-    public Regime(String id, String helpFitID, String name, String description, String regimeType, String timeRequiredWeeks, List<String> ailmentTags, List<String> insterestTags, List<String> habitsTags, String isActive, Date timeCreated, Date timeUpdated) {
+    public Regime(String id, String helpFitID, String name, String description, String regimeType, String timeRequiredWeeks, List<String> ailmentTags, List<String> insterestTags, List<String> habitsTags, String isActive, String timeCreated, String timeUpdated) {
         this.id = id;
         this.helpFitID = helpFitID;
         this.name = name;
@@ -113,21 +113,13 @@ public class Regime {
         this.isActive = isActive;
     }
 
-    public Date getTimeCreated() {
-        return timeCreated;
-    }
+    public String getTimeCreated() { return timeCreated; }
 
-    public void setTimeCreated(Date timeCreated) {
-        this.timeCreated = timeCreated;
-    }
+    public void setTimeCreated(String timeCreated) { this.timeCreated = timeCreated;}
 
-    public Date getTimeUpdated() {
-        return timeUpdated;
-    }
+    public String getTimeUpdated() {return timeUpdated;}
 
-    public void setTimeUpdated(Date timeUpdated) {
-        this.timeUpdated = timeUpdated;
-    }
+    public void setTimeUpdated(String timeUpdated) {this.timeUpdated = timeUpdated;}
 
     @Override
     public String toString() {

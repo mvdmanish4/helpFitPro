@@ -6,6 +6,7 @@ import com.app.server.http.exceptions.APPUnauthorizedException;
 import com.app.server.models.HealthRegime.Regime;
 import com.app.server.models.HealthRegime.RegimeProgram;
 import com.app.server.util.MongoPool;
+import com.app.server.util.parser.RegimeProgramParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
@@ -19,9 +20,14 @@ import org.json.JSONObject;
 
 import java.security.PublicKey;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import static com.app.server.util.parser.RegimeProgramParser.convertDocumentToRegimeProgram;
+import static com.app.server.util.parser.RegimeProgramParser.convertJsonToRegimeProgram;
+import static com.app.server.util.parser.RegimeProgramParser.convertRegimeProgramToDocument;
 
 public class RegimeProgramService {
 
@@ -50,7 +56,7 @@ public class RegimeProgramService {
             return regimeList;
         }
         for (Document item : results) {
-            RegimeProgram regimeProgram = convertDocumentToRegimeProgram(item);
+            RegimeProgram regimeProgram = new RegimeProgramParser().convertDocumentToRegimeProgram(item);
             regimeList.add(regimeProgram);
         }
         return regimeList;
@@ -118,85 +124,12 @@ public class RegimeProgramService {
         }
     }
 
-    private Document convertRegimeProgramToDocument(RegimeProgram regimeProgram){
-        Document doc = new Document("userID",regimeProgram.getUserID())
-                .append("regimesID", regimeProgram.getRegimesID())
-                .append("recommendedDate", regimeProgram.getRecommendedDate())
-                .append("ailmentTags", regimeProgram.getAilmentsAddressed())
-                .append("insterestTags", regimeProgram.getInterestsAddressed())
-                .append("habitsTags",regimeProgram.getHabitsAddressed())
-                .append("isActive", regimeProgram.getIsActive())
-                .append("isFulfilled", regimeProgram.getIsFulfilled())
-                .append("durationWeeks", regimeProgram.getDurationWeeks())
-                .append("startDate", regimeProgram.getStartDate())
-                .append("endDate", regimeProgram.getEndDate())
-                .append("timeCreated", regimeProgram.getTimeCreated())
-                .append("timeUpdated", regimeProgram.getTimeUpdated());
-        return doc;
-    }
-
-    private RegimeProgram convertJsonToRegimeProgram(JSONObject json){
-        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-        Date date = new Date();
-        RegimeProgram regimeProgram = null;
-        try {
-            regimeProgram = new RegimeProgram(json.getString("userID"),
-                    jsonArraytoList(json.getJSONArray("regimesID")),
-                    new SimpleDateFormat("dd/MM/yyyy").parse(json.getString("recommendedDate")),
-                    jsonArraytoList(json.getJSONArray("ailmentTags")),
-                    jsonArraytoList(json.getJSONArray("insterestTags")),
-                    jsonArraytoList(json.getJSONArray("habitsTags")),
-                    json.getString("isActive"),
-                    json.getString("isFulfilled"),
-                    json.getDouble("durationWeeks"),
-                    new SimpleDateFormat("dd/MM/yyyy").parse(json.getString("startDate")),
-                    new SimpleDateFormat("dd/MM/yyyy").parse(json.getString("endDate")),
-                    new Date(),
-                    new Date());
-            regimeProgram.setId(json.getString("_id"));
-        }catch(Exception e){}
-        return regimeProgram;
-    }
-
-    private RegimeProgram convertDocumentToRegimeProgram(Document item) {
-        List<String> regimes = (List<String>) item.get("regimesID");
-        List<String> ailments = (List<String>) item.get("ailmentsAddressed");
-        List<String> interests = (List<String>) item.get("interestsAddressed");
-        List<String> habits = (List<String>) item.get("habitsAddressed");
-        RegimeProgram regimeProgram = new RegimeProgram(
-                item.getString("userID"),
-                regimes,
-                item.getDate("recommendedDate"),
-                ailments,
-                interests,
-                habits,
-                item.getString("isActive"),
-                item.getString("isFulfilled"),
-                item.getDouble("durationWeeks"),
-                item.getDate("startDate"),
-                item.getDate("endDate"),
-                item.getDate("timeCreated"),
-                item.getDate("timeUpdated"));
-        regimeProgram.setId(item.getObjectId("_id").toString());
-        return regimeProgram;
-    }
 
     public Object delete(String id) {
         BasicDBObject query = new BasicDBObject();
         query.put("_id", new ObjectId(id));
         regimeProgramCollection.deleteOne(query);
       return new JSONObject();
-    }
-
-    private List<String> jsonArraytoList(JSONArray jsonArray){
-        ArrayList<String> list = new ArrayList<String>();
-        if (jsonArray != null) {
-            int len = jsonArray.length();
-            for (int i=0;i<len;i++){
-                list.add(jsonArray.get(i).toString());
-            }
-        }
-        return list;
     }
 
 }
