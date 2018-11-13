@@ -4,6 +4,7 @@ import com.app.server.http.exceptions.APPBadRequestException;
 import com.app.server.http.exceptions.APPInternalServerException;
 import com.app.server.http.exceptions.APPUnauthorizedException;
 import com.app.server.models.Event.Event;
+import com.app.server.models.Preferences.RegionsOfService;
 import com.app.server.models.User.EventOrganizer;
 import com.app.server.models.User.User;
 import com.app.server.util.MongoPool;
@@ -16,6 +17,7 @@ import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import org.bson.Document;
 import org.bson.types.ObjectId;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -95,6 +97,8 @@ public class EventOrganizerService {
         try {
             JSONObject json = null;
             json = new JSONObject(ow.writeValueAsString(request));
+
+            validateRequest(json);
             Document doc = EventOrganizerDocumentParser.convertJsonToEventOrganizerDocument(json, userId);
             organizerCollection.insertOne(doc);
             EventOrganizer eventOrganizer = EventOrganizerDocumentParser.convertJsonToEventOrganizer(json, userId);
@@ -152,5 +156,11 @@ public class EventOrganizerService {
     public Object deleteAll() {
         organizerCollection.deleteMany(new BasicDBObject());
         return new JSONObject();
+    }
+
+    public Boolean validateRequest(JSONObject json){
+        if (!json.has("regionsOfService"))
+            throw new APPBadRequestException(55, "regions Of Service Missing");
+        return true;
     }
 }

@@ -15,6 +15,9 @@ import com.mongodb.client.MongoCollection;
 import org.bson.Document;
 import org.json.JSONObject;
 
+import javax.ws.rs.core.HttpHeaders;
+import java.util.List;
+
 /**
  * Services run as singletons
  */
@@ -96,7 +99,7 @@ public class SessionService {
             } else if (userType.equals(UserType.EXPERT)){
                 return new Session(createExpert(request));
             } else if (userType.equals(UserType.EVENT_ORGANIZER)){
-                return new Session(createFitnessUser(request));
+                return new Session(createEventOrganizer(request));
             }
             return null;
         } catch(JsonProcessingException e) {
@@ -128,7 +131,6 @@ public class SessionService {
     private Boolean checkIfEmailAlreadyRegistered(JSONObject json) throws Exception{
         BasicDBObject query = new BasicDBObject();
         query.put("emailAddress", json.getString("emailAddress"));
-        query.put("password", APPCrypt.encrypt(json.getString("password")));
         Document item = this.userCollection.find(query).first();
         if (item != null) {
             throw new APPConflictRequestException(309, "User with the given email Address already exists");
@@ -140,7 +142,7 @@ public class SessionService {
         JSONObject json = new JSONObject(ow.writeValueAsString(request));
         if (!json.has("adminCode"))
             throw new APPBadRequestException(55, "Admin code is missing");
-        if(json.getString("adminCode") != "76876811") {
+        if(!json.getString("adminCode").equals("76876811")) {
             //TODO: The Admin code has to be configured securely in the final submission of the project
             throw new APPBadRequestException(55, "Account creation Denied");
         }
@@ -166,5 +168,16 @@ public class SessionService {
         User user = userService.create(request, false);
         eventOrganizerService.create(request, user.getId());
         return user;
+    }
+
+    private void checkAuthentication(HttpHeaders headers, String id) throws Exception{
+        List<String> authHeaders = headers.getRequestHeader(HttpHeaders.AUTHORIZATION);
+        if (authHeaders == null)
+            throw new APPUnauthorizedException(70,"No Authorization Headers");
+        String token = authHeaders.get(0);
+        String clearToken = APPCrypt.decrypt(token);
+        if (id.compareTo(clearToken) != 0) {
+            throw new APPUnauthorizedException(71,"Invalid token. Please try getting a new token");
+        }
     }
 } // end of main()

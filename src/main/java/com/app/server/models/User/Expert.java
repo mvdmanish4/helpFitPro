@@ -18,7 +18,6 @@ public class Expert {
     private String cityOfService;
     private String regionOfService;
     private List<Ailment> ailments;
-    private List<Interest> interests;
     private String website; //Optional
     private List<Certification> certifications; //Optional
     private Boolean termsConsent;
@@ -28,13 +27,12 @@ public class Expert {
     private User userDetails;
 
     public Expert(String userId, String cityOfService, String regionOfService,
-                  List<Ailment> ailments, List<Interest> interests, Boolean termsConsent,
+                  List<Ailment> ailments, Boolean termsConsent,
                   String timeCreated, String timeUpdated, Boolean isActive){
         this.userId = userId;
         this.cityOfService = cityOfService;
         this.regionOfService = regionOfService;
         this.ailments = ailments;
-        this.interests = interests;
         this.termsConsent = termsConsent;
         this.timeCreated = timeCreated;
         this.timeUpdated = timeUpdated;
@@ -83,14 +81,6 @@ public class Expert {
 
     public void setAilments(List<Ailment> ailments) {
         this.ailments = ailments;
-    }
-
-    public List<Interest> getInterests() {
-        return interests;
-    }
-
-    public void setInterests(List<Interest> interests) {
-        this.interests = interests;
     }
 
     public String getWebsite() {
