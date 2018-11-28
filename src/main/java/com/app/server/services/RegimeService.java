@@ -37,7 +37,6 @@ public class RegimeService {
     private RegimeService() {
         this.regimeCollection = MongoPool.getInstance().getCollection("regime");
         ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
-
     }
 
     public static RegimeService getInstance(){

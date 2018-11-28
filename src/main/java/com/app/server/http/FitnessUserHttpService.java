@@ -11,6 +11,8 @@ import com.fasterxml.jackson.databind.ObjectWriter;
 
 import javax.annotation.security.PermitAll;
 import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -73,4 +75,51 @@ public class FitnessUserHttpService {
 
         return new APPResponse(fitnessUserService.deleteAll());
     }
+
+    @POST
+    @Path("{id}/event/{id2}")
+    @Consumes({ MediaType.APPLICATION_JSON})
+    @Produces({ MediaType.APPLICATION_JSON})
+    public APPResponse registerUserForEvent(@Context HttpHeaders headers, @PathParam("id") String id, @PathParam("id2") String id2, Object request) {
+        return new APPResponse(fitnessUserService.registerUserForEvent(headers, id, id2, request));
+    }
+
+    @POST
+    @Path("{id}/event/{id2}/payment")
+    @Consumes({ MediaType.APPLICATION_JSON})
+    @Produces({ MediaType.APPLICATION_JSON})
+    public APPResponse userPayForEvent(@Context HttpHeaders headers, @PathParam("id") String id, @PathParam("id2") String id2, Object request) {
+        return new APPResponse(fitnessUserService.userPayForEvent(headers, id, id2, request));
+    }
+
+    @GET
+    @Path("{id}/evaluateProgram")
+    @Produces({ MediaType.APPLICATION_JSON})
+    public APPResponse evaluateUserProgram(@Context HttpHeaders headers,@PathParam("id") String id) {
+        return new APPResponse(fitnessUserService.evaluateUserProgram(headers, id));
+    }
+
+
+    @GET
+    @Path("{id}/regimeProgram")
+    @Produces({ MediaType.APPLICATION_JSON})
+    public APPResponse getUserRegimeProgram(@Context HttpHeaders headers,@PathParam("id") String id) {
+        return new APPResponse(fitnessUserService.getUserRegimeProgram(headers, id));
+    }
+
+    @POST
+    @Path("{id}/regimeProgram")
+    @Consumes({ MediaType.APPLICATION_JSON})
+    @Produces({ MediaType.APPLICATION_JSON})
+    public APPResponse createUserRegimeProgram(@Context HttpHeaders headers, @PathParam("id") String id, Object request) {
+        return new APPResponse(fitnessUserService.createUserRegimeProgram(headers, id, request));
+    }
+
+    @DELETE
+    @Path("{id}/regimeProgram")
+    @Produces({ MediaType.APPLICATION_JSON})
+    public APPResponse delete(@Context HttpHeaders headers, @PathParam("id") String id) {
+        return new APPResponse(fitnessUserService.deleteUserRegimeProgram(headers, id));
+    }
+
 }

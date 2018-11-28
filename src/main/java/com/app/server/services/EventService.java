@@ -4,6 +4,7 @@ import com.app.server.http.exceptions.APPBadRequestException;
 import com.app.server.http.exceptions.APPInternalServerException;
 import com.app.server.http.exceptions.APPUnauthorizedException;
 import com.app.server.models.Event.Event;
+import com.app.server.models.HealthRegime.RegimeProgram;
 import com.app.server.models.Preferences.Ailment;
 import com.app.server.models.Preferences.Habit;
 import com.app.server.models.Preferences.Interest;
@@ -88,7 +89,6 @@ public class EventService {
         return eventList;
     }
 
-
     public ArrayList<Event> getAllEvents() {
         ArrayList<Event> eventList = new ArrayList<Event>();
 
@@ -102,6 +102,29 @@ public class EventService {
         }
         return eventList;
     }
+
+    public ArrayList<Event> getEvents(ArrayList<RegimeProgram> RegimePrograms){
+        ArrayList<Event> eventsRecommended = new ArrayList<Event>();
+        ArrayList<Event> eventsAll = getAllEvents();
+        for(RegimeProgram regimeProgram: RegimePrograms){
+           List<String> ailmentRegime = regimeProgram.getAilmentsAddressed();
+           for(Event event: eventsAll){
+            List<Ailment> ailmentEvent = event.getAilmentTags();
+             boolean isRecommended = true;
+              for(int i=0;i<ailmentEvent.size();i++){
+                   if(ailmentEvent.get(0).getId() != Integer.parseInt(ailmentRegime.get(0))){
+                     isRecommended = false;
+                     break;
+                   }
+               }
+               if(isRecommended) eventsRecommended.add(event);
+
+           }
+        }
+        return eventsRecommended;
+    }
+
+
 
     public Event getEvent(String id) {
         BasicDBObject query = new BasicDBObject();
@@ -129,7 +152,6 @@ public class EventService {
     }
 
     public Event create(Object request) {
-
         try {
             JSONObject json = null;
             json = new JSONObject(ow.writeValueAsString(request));
@@ -164,7 +186,6 @@ public class EventService {
             Document set = new Document("$set", EventDocumentParser.convertJsonToEventDocument(json));
             eventCollection.updateOne(query,set);
             return request;
-
         } catch(JsonProcessingException e) {
             System.out.println("Failed to create a document");
             return null;
