@@ -93,10 +93,17 @@ public class FitnessUserHttpService {
     }
 
     @GET
+    @Path("{id}/transactions")
+    @Produces({ MediaType.APPLICATION_JSON})
+    public APPResponse getUserTransactions(@Context HttpHeaders headers,@PathParam("id") String id) {
+        return new APPResponse(fitnessUserService.getUserTransactions(headers, id));
+    }
+
+    @GET
     @Path("{id}/evaluateProgram")
     @Produces({ MediaType.APPLICATION_JSON})
     public APPResponse evaluateUserProgram(@Context HttpHeaders headers,@PathParam("id") String id) {
-        return new APPResponse(fitnessUserService.evaluateUserProgram(headers, id));
+        return new APPResponse(fitnessUserService.getEvaluateAndUserProgram(headers, id));
     }
 
 
@@ -121,5 +128,4 @@ public class FitnessUserHttpService {
     public APPResponse delete(@Context HttpHeaders headers, @PathParam("id") String id) {
         return new APPResponse(fitnessUserService.deleteUserRegimeProgram(headers, id));
     }
-
 }

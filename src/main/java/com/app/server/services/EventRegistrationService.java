@@ -21,6 +21,8 @@ import javax.json.Json;
 import java.time.Instant;
 import java.util.List;
 
+import static com.app.server.util.parser.EventRegistrationParser.convertEventRegistrationToDocument;
+import static com.app.server.util.parser.EventRegistrationParser.convertJsonToEventRegistration;
 import static com.app.server.util.parser.RegimeParser.convertDocumentToRegime;
 
 public class EventRegistrationService {
@@ -63,76 +65,4 @@ public class EventRegistrationService {
             throw new APPInternalServerException(99, e.getMessage());
         }
     }
-
-    /*public void updatePaymentStatus(String fitnessUserId,String eventId){
-        EventRegistration eventReg = getOne(fitnessUserId, eventId);
-        Json json =
-
-    }
-
-    public EventRegistration getOne(String fitnessUserId, String eventId) {
-        BasicDBObject query = new BasicDBObject();
-        query.put("eventID", eventId);
-        query.put("userID", fitnessUserId);
-        Document item = eventRegistrationCollection.find(query).first();
-        if (item == null) {
-            return  null;
-        }
-        return convertDocumentToEventRegistration(item);
-    }*/
-
-    public EventRegistration convertDocumentToEventRegistration(Document item) {
-        EventRegistration eventRegistration = new EventRegistration(
-                     item.getString("eventID"),
-                     item.getString("userID"),
-                     item.getBoolean("isFavorite"),
-                     item.getBoolean("isRegistered"),
-                     item.getString("paymentStatus"),
-                     item.getString("paymentMode"),
-                     item.getString("transactionID"),
-                     item.getString("registrationTime"),
-                     item.getString("registrationDate"),
-                     item.getBoolean("isActive"),
-                     item.getString("timeCreated"),
-                     item.getString("timeUpdated")
-        );
-        return eventRegistration;
-    }
-
-
-    public static Document convertEventRegistrationToDocument(EventRegistration eventRegistration){
-        Document doc = new Document("eventID", eventRegistration.getEventID())
-                .append("userID", eventRegistration.getUserID())
-                .append("isFavorite", eventRegistration.isFavorite())
-                .append("isRegistered", eventRegistration.isRegistered())
-                .append("paymentStatus", eventRegistration.getPaymentStatus())
-                .append("paymentMode", eventRegistration.getPaymentMode())
-                .append("transactionID", eventRegistration.getTransactionID())
-                .append("registrationTime", eventRegistration.getRegistrationTime())
-                .append("registrationDate", eventRegistration.getRegistrationDate())
-                .append("isActive", eventRegistration.isActive())
-                .append("timeCreated",eventRegistration.getTimeCreated())
-                .append("timeUpdated", eventRegistration.getTimeUpdated());
-        return doc;
-    }
-
-    public static EventRegistration convertJsonToEventRegistration(String fitnessUserId, String eventId,JSONObject json){
-
-        EventRegistration eventRegistration = new EventRegistration(
-                eventId,
-                fitnessUserId,
-                json.getBoolean("isFavorite"),
-                json.getBoolean("isRegistered"),
-                json.getString("paymentStatus"),
-                json.getString("paymentMode"),
-                json.getString("transactionID"),
-                json.getString("registrationTime"),
-                json.getString("registrationDate"),
-                json.getBoolean("isActive"),
-                json.has("timeCreated")?json.getString("isFulfilled"): String.valueOf(Instant.now().getEpochSecond()),
-                String.valueOf(Instant.now().getEpochSecond())
-        );
-        return eventRegistration;
-    }
-
 }

@@ -5,6 +5,7 @@ import com.app.server.http.exceptions.APPInternalServerException;
 import com.app.server.http.exceptions.APPUnauthorizedException;
 import com.app.server.models.Event.Event;
 import com.app.server.models.Event.EventRegistration;
+import com.app.server.models.HealthRegime.Regime;
 import com.app.server.models.HealthRegime.RegimeProgram;
 import com.app.server.models.Payment.Transaction;
 import com.app.server.models.Preferences.Ailment;
@@ -13,6 +14,7 @@ import com.app.server.models.Preferences.Interest;
 import com.app.server.models.User.FitnessUser;
 import com.app.server.models.User.User;
 import com.app.server.models.UserInfo.UserEvaluation;
+import com.app.server.models.UserInfo.UserEventRegime;
 import com.app.server.util.APPCrypt;
 import com.app.server.util.MongoPool;
 import com.app.server.util.parser.FitnessUserDocumentParser;
@@ -48,6 +50,7 @@ public class FitnessUserService {
     private TransactionService transactionService;
     private RegimeProgramService regimeProgramService;
     private EventService eventService;
+    private RegimeService regimeService;
 
     private FitnessUserService() {
         this.fitnessUserCollection = MongoPool.getInstance().getCollection("fitnessUser");
@@ -55,8 +58,9 @@ public class FitnessUserService {
         this.userServiceInstance = UserService.getInstance();
         this.eventRegistrationService = EventRegistrationService.getInstance();
         this.transactionService = TransactionService.getInstance();
-        regimeProgramService = RegimeProgramService.getInstance();
-        eventService = EventService.getInstance();
+        this.regimeProgramService = RegimeProgramService.getInstance();
+        this.eventService = EventService.getInstance();
+        this.regimeService = RegimeService.getInstance();
     }
 
     public static FitnessUserService getInstance(){
@@ -170,7 +174,6 @@ public class FitnessUserService {
         try {
             checkAuthentication(headers,fitnessUserId);
             trans = transactionService.create(request);
-            //eventRegistrationService.updatePaymentStatus(fitnessUserId,eventId);
         } catch(JsonProcessingException e) {
             System.out.println("Failed to create a document");
             return null;
@@ -186,7 +189,50 @@ public class FitnessUserService {
         return trans;
     }
 
-    public UserEvaluation evaluateUserProgram(HttpHeaders headers, String id){
+    public ArrayList<Transaction> getUserTransactions(HttpHeaders headers, String id){
+        ArrayList<Transaction> userTransactions = null;
+        try {
+            checkAuthentication(headers, id);
+            userTransactions = transactionService.getAllUserTranscations(id);
+        }catch(JsonProcessingException e) {
+            System.out.println("Failed to create a document");
+            return null;
+        } catch(APPBadRequestException e) {
+            throw new APPBadRequestException(33, e.getMessage());
+        } catch(APPUnauthorizedException e) {
+            throw new APPUnauthorizedException(34, e.getMessage());
+        } catch(Exception e) {
+            System.out.println("EXCEPTION!!!!");
+            e.printStackTrace();
+            throw new APPInternalServerException(99, e.getMessage());
+        }
+        return userTransactions;
+    }
+
+    public UserEvaluation getEvaluateAndUserProgram(HttpHeaders headers, String id){
+        ArrayList<RegimeProgram> regimePrograms = null;
+        ArrayList<String> regimesId = null;
+        ArrayList<UserEventRegime> userEventRegimes = null;
+        try{
+            checkAuthentication(headers, id);
+            regimePrograms = getUserRegimeProgram(headers,id);
+            regimesId = regimeService.getRegimeInRegimeProgram(regimePrograms);
+            userEventRegimes = eventService.getEventsByRegime(regimesId);
+          return new UserEvaluation(regimePrograms.get(0),userEventRegimes);
+        }catch(JsonProcessingException e) {
+            System.out.println("Failed to create a document");
+            return null;
+        } catch(APPBadRequestException e) {
+            throw new APPBadRequestException(33, e.getMessage());
+        }catch(APPUnauthorizedException e) {
+            throw new APPUnauthorizedException(34, e.getMessage());
+        }catch(Exception e) {
+            System.out.println("EXCEPTION!!!!");
+            e.printStackTrace();
+            throw new APPInternalServerException(99, e.getMessage());
+        }
+    }
+    /*public UserEvaluation evaluateUserProgram(HttpHeaders headers, String id){
         ArrayList<RegimeProgram> regimePrograms = null;
         ArrayList<Event> eventsRecommended = null;
         try {
@@ -206,7 +252,7 @@ public class FitnessUserService {
             e.printStackTrace();
             throw new APPInternalServerException(99, e.getMessage());
         }
-    }
+    }*/
 
     public ArrayList<RegimeProgram> getUserRegimeProgram(HttpHeaders headers, String id){
         ArrayList<RegimeProgram> regimePrograms = null;

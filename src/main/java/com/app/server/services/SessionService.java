@@ -59,8 +59,8 @@ public class SessionService {
                 throw new APPBadRequestException(55, "missing password");
             BasicDBObject query = new BasicDBObject();
             query.put("emailAddress", json.getString("emailAddress"));
-            //query.put("password", APPCrypt.encrypt(json.getString("password")));
-            query.put("password", json.getString("password"));
+            query.put("password", APPCrypt.encrypt(json.getString("password")));
+            //query.put("password", json.getString("password"));
             Document item = this.userCollection.find(query).first();
             if (item == null) {
                 throw new APPNotFoundException(0, "No user found matching credentials");
@@ -143,7 +143,6 @@ public class SessionService {
         if (!json.has("adminCode"))
             throw new APPBadRequestException(55, "Admin code is missing");
         if(!json.getString("adminCode").equals("76876811")) {
-            //TODO: The Admin code has to be configured securely in the final submission of the project
             throw new APPBadRequestException(55, "Account creation Denied");
         }
         return userService.create(request, true);

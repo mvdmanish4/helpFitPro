@@ -4,10 +4,12 @@ import com.app.server.http.exceptions.APPBadRequestException;
 import com.app.server.http.exceptions.APPInternalServerException;
 import com.app.server.http.exceptions.APPUnauthorizedException;
 import com.app.server.models.Event.Event;
+import com.app.server.models.HealthRegime.Regime;
 import com.app.server.models.HealthRegime.RegimeProgram;
 import com.app.server.models.Preferences.Ailment;
 import com.app.server.models.Preferences.Habit;
 import com.app.server.models.Preferences.Interest;
+import com.app.server.models.UserInfo.UserEventRegime;
 import com.app.server.util.MongoPool;
 import com.app.server.util.parser.EventDocumentParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -35,11 +37,12 @@ public class EventService {
     private static EventService instance;
     private ObjectWriter ow;
     private MongoCollection<Document> eventCollection = null;
+    private RegimeService regimeService;
 
     private EventService() {
         this.eventCollection = MongoPool.getInstance().getCollection("event");
         ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
-
+        regimeService = RegimeService.getInstance();
     }
 
     public static EventService getInstance(){
@@ -102,6 +105,35 @@ public class EventService {
         }
         return eventList;
     }
+
+    public ArrayList<UserEventRegime> getEventsByRegime(List<String> regimesId){
+        ArrayList<UserEventRegime> userEventRegimes = new ArrayList<UserEventRegime>();
+        ArrayList<Event> eventsAll = getAllEvents();
+        List<Event> eventsRecomended = new ArrayList<Event>();
+        for(String regId: regimesId){
+            Regime regime = regimeService.getOne(regId);
+            List<String> ailmentRegime = regime.getAilmentTags();
+            for(Event event: eventsAll){
+                List<Ailment> ailmentEvent = event.getAilmentTags();
+                boolean isRecommended = true;
+                for(int i=0;i<ailmentEvent.size();i++){
+                    if(ailmentEvent.get(0).getId() != Integer.parseInt(ailmentRegime.get(0))){
+                        isRecommended = false;
+                        break;
+                    }
+                }
+                if(isRecommended){
+                    eventsRecomended.add(event);
+                }
+            }
+            if(!eventsRecomended.isEmpty()){
+                UserEventRegime userEventRegime = new UserEventRegime(regime,eventsRecomended);
+                userEventRegimes.add(userEventRegime);
+            }
+        }
+        return userEventRegimes;
+    }
+
 
     public ArrayList<Event> getEvents(ArrayList<RegimeProgram> RegimePrograms){
         ArrayList<Event> eventsRecommended = new ArrayList<Event>();
